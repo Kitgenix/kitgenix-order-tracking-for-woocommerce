@@ -1,0 +1,601 @@
+/* ==========================================================================
+   Kitgenix Order Tracking For WooCommerce/kitgenix-order-tracking-for-woocommerce
+   ========================================================================== */
+/* ----------------------------------------------------------------
+  Page app wrapper
+----------------------------------------------------------------- */
+#kitgenix-order-tracking-for-woocommerce-admin-app,
+.kitgenix-analytics-wrap {
+  width: 100%;
+  max-width: 1240px;
+}
+
+/* ----------------------------------------------------------------
+  Shared helpers used by analytics markup
+----------------------------------------------------------------- */
+.kitgenix-analytics-panel {
+  border-radius: 4px;
+  background: #ffffff;
+  border: 1px solid #dcdcde;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.04);
+  padding: 20px;
+}
+
+/* Carriers tab: space between built-in and custom cards */
+.kitgenix-carriers-settings .kitgenix-analytics-panel + .kitgenix-analytics-panel {
+  margin-top: 14px;
+}
+
+.kitgenix-analytics-panel h2,
+.kitgenix-analytics-panel h3 {
+  margin: 0 0 16px;
+  color: #1d2327;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+/* ----------------------------------------------------------------
+  Support tab
+----------------------------------------------------------------- */
+.kitgenix-order-tracking-for-woocommerce-support-page .kitgenix-order-tracking-for-woocommerce-support-heading {
+  font-size: 1.2em;
+  font-weight: 800;
+  margin: 0 0 8px;
+  color: var(--kitgenix-heading);
+  letter-spacing: -0.01em;
+}
+
+.kitgenix-order-tracking-for-woocommerce-support-page .kitgenix-order-tracking-for-woocommerce-support-intro {
+  margin-top: 0;
+  margin-bottom: 18px;
+  color: var(--kitgenix-text-muted);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.kitgenix-order-tracking-for-woocommerce-support-page .kitgenix-order-tracking-for-woocommerce-support-subheading {
+  margin: 20px 0 8px;
+  font-size: 11.5px;
+  font-weight: 700;
+  color: var(--kitgenix-heading);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.kitgenix-order-tracking-for-woocommerce-support-page .ul-disc {
+  margin: 8px 0 14px 1.2em;
+  list-style: disc;
+}
+
+.kitgenix-order-tracking-for-woocommerce-support-page .kitgenix-order-tracking-for-woocommerce-support-actions {
+  margin-top: 18px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.kitgenix-order-tracking-for-woocommerce-support-page .kitgenix-order-tracking-for-woocommerce-support-actions .button {
+  margin: 0;
+}
+
+.kitgenix-analytics-muted {
+  color: var(--kitgenix-text-muted);
+}
+
+.kitgenix-analytics-list {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.kitgenix-analytics-sparkline {
+  display: block;
+  max-width: 100%;
+}
+
+.kitgenix-analytics-sparkline svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+.kitgenix-analytics-mt-0 { margin-top: 0; }
+.kitgenix-analytics-mt-10 { margin-top: 0px; }
+.kitgenix-analytics-mt-12 { margin-top: 0px; }
+.kitgenix-analytics-mt-14 { margin-top: 0px; }
+
+/* ----------------------------------------------------------------
+  Filters bar
+----------------------------------------------------------------- */
+.kitgenix-analytics-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 16px 18px;
+  border: 1px solid #dcdcde;
+  border-radius: 4px;
+  background: #ffffff;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.04);
+  margin-bottom: 20px;
+  align-items: center;
+}
+
+.kitgenix-analytics-filters select,
+.kitgenix-analytics-filters input[type="date"],
+.kitgenix-analytics-filters input[type="text"] {
+  padding: 7px 10px;
+  font-size: 13px;
+  border: 1px solid var(--kitgenix-border-color-strong);
+  border-radius: var(--kitgenix-radius-xs);
+  background: var(--kitgenix-surface);
+  color: var(--kitgenix-text-color);
+  transition: border-color var(--kitgenix-transition), box-shadow var(--kitgenix-transition);
+}
+
+.kitgenix-analytics-filters select:focus-visible,
+.kitgenix-analytics-filters input:focus-visible {
+  outline: none;
+  border-color: var(--kitgenix-brand);
+  box-shadow: var(--kitgenix-focus-ring);
+}
+
+/* Date preset pills */
+.kitgenix-analytics-presets {
+  display: flex;
+  gap: 5px;
+  flex-wrap: wrap;
+}
+
+.kitgenix-analytics-presets a {
+  display: inline-block;
+  border-radius: 4px;
+  padding: 4px 12px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid #dcdcde;
+  text-decoration: none;
+  color: #50575e;
+  background: #ffffff;
+  transition: all var(--kitgenix-transition);
+}
+
+.kitgenix-analytics-presets a.is-active,
+.kitgenix-analytics-presets a:hover {
+  background: #ffffff;
+  color: var(--kitgenix-brand);
+  border-color: var(--kitgenix-brand);
+  text-decoration: none;
+}
+
+/* Meta moved into the filters bar (range summary + refresh) */
+.kitgenix-analytics-filters-meta {
+  width: 100%;
+  margin-left: 0;
+  margin-top: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+}
+
+.kitgenix-analytics-filters-meta .kitgenix-analytics-header__meta {
+  font-size: 12px;
+  color: var(--kitgenix-text-muted);
+}
+
+/* ----------------------------------------------------------------
+  KPI cards grid
+----------------------------------------------------------------- */
+.kitgenix-analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+  margin-bottom: 22px;
+}
+
+.kitgenix-analytics-card {
+  border-radius: 4px;
+  background: #ffffff;
+  border: 1px solid #dcdcde;
+  box-shadow: 0 1px 1px rgba(0,0,0,0.04);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 20px;
+  transition: transform var(--kitgenix-transition), box-shadow var(--kitgenix-transition);
+  overflow: hidden;
+  position: relative;
+}
+
+/* Gradient top accent on each KPI card */
+.kitgenix-analytics-card::before {
+  content: none;
+}
+
+.kitgenix-analytics-card:hover {
+  transform: translateY(-1px);
+  border-color: #c3c4c7;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08);
+}
+
+.kitgenix-analytics-card-icon {
+  font-size: 24px;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.kitgenix-analytics-card-value {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--kitgenix-brand);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+/* Current KPI markup (BEM) */
+.kitgenix-analytics-card__body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+}
+
+.kitgenix-analytics-card__title {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--kitgenix-text-muted);
+  font-weight: 700;
+}
+
+.kitgenix-analytics-card__value {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--kitgenix-brand);
+  line-height: 1;
+  letter-spacing: -0.02em;
+}
+
+.kitgenix-analytics-card__sub {
+  font-size: 12.5px;
+  color: var(--kitgenix-text-muted);
+}
+
+.kitgenix-analytics-card-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--kitgenix-text-muted);
+  margin-top: 4px;
+  font-weight: 700;
+}
+
+/* ----------------------------------------------------------------
+  Analytics tables (extends .kitgenix-table from shared CSS)
+----------------------------------------------------------------- */
+.kitgenix-analytics-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  table-layout: fixed;
+  min-width: 680px;
+  font-size: 13px;
+}
+
+.kitgenix-analytics-table thead th {
+  background: var(--kitgenix-surface-alt);
+  border-bottom: 1px solid var(--kitgenix-border-color);
+  padding: 10px 14px;
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--kitgenix-text-muted);
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.kitgenix-analytics-table tbody tr {
+  border-bottom: 1px solid var(--kitgenix-border-color);
+  transition: background var(--kitgenix-transition-fast);
+}
+
+.kitgenix-analytics-table tbody tr:hover {
+  background: color-mix(in srgb, var(--kitgenix-brand) 4%, var(--kitgenix-surface));
+}
+
+.kitgenix-analytics-table tbody td {
+  padding: 10px 14px;
+  vertical-align: middle;
+}
+
+/* ----------------------------------------------------------------
+  Status pills
+----------------------------------------------------------------- */
+.kitgenix-analytics-status-pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: var(--kitgenix-radius-pill);
+  padding: 3px 10px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border: 1px solid transparent;
+}
+
+.kitgenix-analytics-status-pill.shipped {
+  background: var(--kitgenix-success-bg);
+  color: var(--kitgenix-success);
+  border-color: var(--kitgenix-success-border);
+}
+
+.kitgenix-analytics-status-pill.exception {
+  background: var(--kitgenix-warning-bg);
+  color: var(--kitgenix-warning);
+  border-color: var(--kitgenix-warning-border);
+}
+
+.kitgenix-analytics-status-pill.pending {
+  background: var(--kitgenix-surface-muted);
+  color: var(--kitgenix-text-muted);
+  border-color: var(--kitgenix-border-color);
+}
+
+.kitgenix-analytics-status-pill.error {
+  background: var(--kitgenix-error-bg);
+  color: var(--kitgenix-error);
+  border-color: var(--kitgenix-error-border);
+}
+
+/* Current status pill variants (rendered as kitgenix-analytics-status-{key}) */
+.kitgenix-analytics-status-shipped,
+.kitgenix-analytics-status-delivered,
+.kitgenix-analytics-status-completed {
+  background: var(--kitgenix-success-bg);
+  color: var(--kitgenix-success);
+  border-color: var(--kitgenix-success-border);
+}
+
+.kitgenix-analytics-status-exception,
+.kitgenix-analytics-status-failed,
+.kitgenix-analytics-status-returned {
+  background: var(--kitgenix-warning-bg);
+  color: var(--kitgenix-warning);
+  border-color: var(--kitgenix-warning-border);
+}
+
+.kitgenix-analytics-status-pending,
+.kitgenix-analytics-status-processing,
+.kitgenix-analytics-status-on-hold {
+  background: var(--kitgenix-surface-muted);
+  color: var(--kitgenix-text-muted);
+  border-color: var(--kitgenix-border-color);
+}
+
+.kitgenix-analytics-status-error,
+.kitgenix-analytics-status-cancelled,
+.kitgenix-analytics-status-refunded {
+  background: var(--kitgenix-error-bg);
+  color: var(--kitgenix-error);
+  border-color: var(--kitgenix-error-border);
+}
+
+/* ----------------------------------------------------------------
+  Rank list (bar chart table)
+----------------------------------------------------------------- */
+.kitgenix-analytics-ranklist__row {
+  display: grid;
+  grid-template-columns: 1.2fr 2.5fr 0.8fr;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--kitgenix-border-color);
+}
+
+.kitgenix-analytics-ranklist__row:last-child {
+  border-bottom: none;
+}
+
+.kitgenix-analytics-ranklist__bar-wrap,
+.kitgenix-analytics-ranklist__bar {
+  background: var(--kitgenix-surface-muted);
+  border-radius: 4px;
+  height: 6px;
+  overflow: hidden;
+}
+
+.kitgenix-analytics-ranklist__bar-fill,
+.kitgenix-analytics-ranklist__bar > span {
+  background: var(--kitgenix-brand-gradient);
+  border-radius: 4px;
+  height: 6px;
+  width: 0;
+  transition: width .5s cubic-bezier(.4,0,.2,1);
+  display: block;
+}
+
+.kitgenix-analytics-ranklist__label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--kitgenix-heading);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.kitgenix-analytics-ranklist__count {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--kitgenix-brand);
+  text-align: right;
+}
+
+.kitgenix-analytics-ranklist__right {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 2px;
+}
+
+.kitgenix-analytics-ranklist__right strong {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--kitgenix-brand);
+}
+
+.kitgenix-analytics-ranklist__pct {
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--kitgenix-text-muted);
+}
+
+/* ----------------------------------------------------------------
+  Two-column layout (breakdown panels)
+----------------------------------------------------------------- */
+.kitgenix-analytics-two-column {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 18px;
+  margin-bottom: 22px;
+}
+
+/* ----------------------------------------------------------------
+  Order meta box item rows
+----------------------------------------------------------------- */
+.kitgenix-order-tracking-for-woocommerce-items-container {
+  max-height: 220px;
+  overflow-y: auto;
+  border: 1px solid var(--kitgenix-border-color);
+  border-radius: var(--kitgenix-radius-xs);
+  margin-bottom: 12px;
+}
+
+.kitgenix-order-tracking-for-woocommerce-item-row {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 8px;
+  align-items: center;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--kitgenix-border-color);
+  transition: background var(--kitgenix-transition-fast);
+}
+
+.kitgenix-order-tracking-for-woocommerce-item-row:last-child {
+  border-bottom: none;
+}
+
+.kitgenix-order-tracking-for-woocommerce-item-row:hover {
+  background: color-mix(in srgb, var(--kitgenix-brand) 4%, var(--kitgenix-surface));
+}
+
+/* ----------------------------------------------------------------
+  Carrier management card
+----------------------------------------------------------------- */
+.kitgenix-analytics-carrier-logo {
+  width: 48px;
+  height: 28px;
+  object-fit: contain;
+  border-radius: 4px;
+  border: 1px solid var(--kitgenix-border-color);
+  padding: 2px;
+  background: var(--kitgenix-surface);
+}
+
+/* ----------------------------------------------------------------
+  Responsive
+----------------------------------------------------------------- */
+@media (max-width: 782px) {
+  .kitgenix-analytics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .kitgenix-analytics-two-column {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ----------------------------------------------------------------
+  Accessibility
+----------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  #kitgenix-order-tracking-for-woocommerce-admin-app *,
+  .kitgenix-analytics-wrap * {
+    transition: none !important;
+    animation: none !important;
+  }
+  .kitgenix-analytics-ranklist__bar-fill {
+    transition: none !important;
+  }
+}
+
+/* ----------------------------------------------------------------
+  WORDPRESS 7.0 ADMIN EXTENSIONS
+  Preserve plugin layouts while aligning controls with WP admin styles.
+----------------------------------------------------------------- */
+
+:root {
+  --kitgenix-brand: #4f2a9a;
+  --kitgenix-brand-hover: #42237f;
+  --kitgenix-brand-active: #351b66;
+  --kitgenix-focus-ring: 0 0 0 1px #4f2a9a;
+}
+
+.kitgenix-admin-app :is(input[type="text"], input[type="search"], input[type="number"], input[type="url"], input[type="email"], input[type="password"], input[type="date"], select, textarea),
+.kitgenix-analytics-wrap :is(input[type="text"], input[type="search"], input[type="number"], input[type="url"], input[type="email"], input[type="password"], input[type="date"], select, textarea),
+.wrap.kitgenix-pdf-invoicing-for-woocommerce-pdf-settings :is(input[type="text"], input[type="search"], input[type="number"], input[type="url"], input[type="email"], input[type="password"], input[type="date"], select, textarea) {
+  border-color: #8c8f94;
+  border-radius: 4px;
+  color: #2c3338;
+  background: #ffffff;
+}
+
+.kitgenix-admin-app :is(input[type="text"], input[type="search"], input[type="number"], input[type="url"], input[type="email"], input[type="password"], input[type="date"], select, textarea):focus,
+.kitgenix-admin-app :is(input[type="text"], input[type="search"], input[type="number"], input[type="url"], input[type="email"], input[type="password"], input[type="date"], select, textarea):focus-visible,
+.kitgenix-analytics-wrap :is(input[type="text"], input[type="search"], input[type="number"], input[type="url"], input[type="email"], input[type="password"], input[type="date"], select, textarea):focus,
+.kitgenix-analytics-wrap :is(input[type="text"], input[type="search"], input[type="number"], input[type="url"], input[type="email"], input[type="password"], input[type="date"], select, textarea):focus-visible,
+.wrap.kitgenix-pdf-invoicing-for-woocommerce-pdf-settings :is(input[type="text"], input[type="search"], input[type="number"], input[type="url"], input[type="email"], input[type="password"], input[type="date"], select, textarea):focus,
+.wrap.kitgenix-pdf-invoicing-for-woocommerce-pdf-settings :is(input[type="text"], input[type="search"], input[type="number"], input[type="url"], input[type="email"], input[type="password"], input[type="date"], select, textarea):focus-visible {
+  border-color: #4f2a9a;
+  box-shadow: 0 0 0 1px #4f2a9a;
+  outline: 2px solid transparent;
+}
+
+.kitgenix-admin-app :is(.button.button-primary, button.button-primary, a.button.button-primary, input.button.button-primary),
+.kitgenix-analytics-wrap :is(.button.button-primary, button.button-primary, a.button.button-primary, input.button.button-primary),
+.wrap.kitgenix-pdf-invoicing-for-woocommerce-pdf-settings :is(.button.button-primary, button.button-primary, a.button.button-primary, input.button.button-primary) {
+  border-color: #4f2a9a;
+  background: #4f2a9a;
+  color: #ffffff;
+  text-shadow: none;
+}
+
+.kitgenix-admin-app :is(.button.button-primary, button.button-primary, a.button.button-primary, input.button.button-primary):hover,
+.kitgenix-admin-app :is(.button.button-primary, button.button-primary, a.button.button-primary, input.button.button-primary):focus-visible,
+.kitgenix-analytics-wrap :is(.button.button-primary, button.button-primary, a.button.button-primary, input.button.button-primary):hover,
+.kitgenix-analytics-wrap :is(.button.button-primary, button.button-primary, a.button.button-primary, input.button.button-primary):focus-visible,
+.wrap.kitgenix-pdf-invoicing-for-woocommerce-pdf-settings :is(.button.button-primary, button.button-primary, a.button.button-primary, input.button.button-primary):hover,
+.wrap.kitgenix-pdf-invoicing-for-woocommerce-pdf-settings :is(.button.button-primary, button.button-primary, a.button.button-primary, input.button.button-primary):focus-visible {
+  border-color: #42237f;
+  background: #42237f;
+  color: #ffffff;
+}
+
+.kitgenix-admin-app :is(.button.button-secondary, button.button-secondary, a.button.button-secondary),
+.kitgenix-analytics-wrap :is(.button.button-secondary, button.button-secondary, a.button.button-secondary),
+.wrap.kitgenix-pdf-invoicing-for-woocommerce-pdf-settings :is(.button.button-secondary, button.button-secondary, a.button.button-secondary) {
+  border-color: #4f2a9a;
+  color: #4f2a9a;
+  background: #f6f7f7;
+}
+
+.kitgenix-admin-app :is(.button.button-secondary, button.button-secondary, a.button.button-secondary):hover,
+.kitgenix-admin-app :is(.button.button-secondary, button.button-secondary, a.button.button-secondary):focus-visible,
+.kitgenix-analytics-wrap :is(.button.button-secondary, button.button-secondary, a.button.button-secondary):hover,
+.kitgenix-analytics-wrap :is(.button.button-secondary, button.button-secondary, a.button.button-secondary):focus-visible,
+.wrap.kitgenix-pdf-invoicing-for-woocommerce-pdf-settings :is(.button.button-secondary, button.button-secondary, a.button.button-secondary):hover,
+.wrap.kitgenix-pdf-invoicing-for-woocommerce-pdf-settings :is(.button.button-secondary, button.button-secondary, a.button.button-secondary):focus-visible {
+  border-color: #42237f;
+  color: #42237f;
+  background: #f0f0f1;
+}

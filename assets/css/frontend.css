@@ -1,0 +1,160 @@
+/* Kitgenix Order Tracking for WooCommerce — Frontend Styles
+   Styles for the plugin's frontend interface, including the tracking form and results display.
+   Built with a focus on usability and consistency with WordPress frontend design patterns, while maintaining a clean and modern look.
+*/
+
+/* Wrapper for the form area */
+.kitgenix-tracking-form {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* Spacing inside the form */
+.kitgenix-tracking-form form p {
+    margin-bottom: 12px;
+}
+
+/* Error message display */
+.kitgenix-tracking-error {
+    color: #b81c23;
+}
+
+/* Results wrapper */
+.kitgenix-tracking-results {
+    margin-top: 24px;
+}
+
+/* Tracking list reset */
+.kitgenix-tracking-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+/* Tracking list items */
+.kitgenix-tracking-item {
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+}
+
+/* ===================== New consolidated styles (moved from inline) ===================== */
+.kitgenix-tracking-wrapper {
+    max-width: 880px;
+    margin: 0 auto 40px;
+    font-size: 14px;
+}
+.kitgenix-tracking-card {
+    background: #ffffff;
+    border: 1px solid #e5e5e5;
+    border-radius: 6px;
+    padding: 20px 24px;
+    margin-bottom: 8px;
+}
+.kitgenix-tracking-title {
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-size: 20px;
+}
+.kitgenix-tracking-intro {
+    margin-top: 0;
+    margin-bottom: 16px;
+    color: #555d66;
+}
+.kitgenix-tracking-form { /* keep wrapper spacing consistent */
+    margin: 0;
+}
+.kitgenix-tracking-mode-switch {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+.kitgenix-mode-option {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 10px;
+    border-radius: 20px;
+    border: 1px solid #d5d8dc;
+    cursor: pointer;
+    background: #f6f7f7;
+    font-weight: 500;
+}
+.kitgenix-mode-option input { margin: 0; }
+.kitgenix-tracking-fields { margin-bottom: 16px; }
+.kitgenix-field-group { margin-bottom: 12px; }
+.kitgenix-field-group input[type="text"],
+.kitgenix-field-group input[type="email"] {
+    width: 100%;
+    max-width: 100%;
+    padding: 6px 8px;
+    border-radius: 4px;
+    border: 1px solid #c3c4c7;
+}
+.kitgenix-label {
+    display: block;
+    font-weight: 500;
+    margin-bottom: 4px;
+}
+.kitgenix-field-postcode .kitgenix-help {
+    display: block;
+    font-size: 12px;
+    color: #6c737c;
+    margin-top: 3px;
+}
+.kitgenix-actions { margin-top: 8px; }
+.kitgenix-button-primary { padding-left: 20px; padding-right: 20px; }
+.kitgenix-tracking-error {
+    margin-top: 12px;
+    padding: 10px 12px;
+    border-radius: 4px;
+    background: #fbeaea;
+    color: #a42834;
+}
+.kitgenix-tracking-results { margin-top: 8px; }
+.kitgenix-results-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr);
+    gap: 16px;
+}
+.kitgenix-card { background: #ffffff; border: 1px solid #e5e5e5; border-radius: 6px; padding: 16px 18px; }
+.kitgenix-mt-16 { margin-top: 16px; }
+.kitgenix-card h3 { margin-top: 0; margin-bottom: 10px; font-size: 16px; }
+.kitgenix-order-meta, .kitgenix-order-status { margin: 4px 0; }
+.kitgenix-order-status { font-weight: 600; }
+.kitgenix-tracking-list { list-style: none; padding: 0; margin: 0; }
+.kitgenix-tracking-item { padding: 10px 0; border-bottom: 1px solid #ececec; }
+.kitgenix-tracking-item:last-child { border-bottom: none; }
+.kitgenix-tracking-header { display: flex; align-items: center; gap: 8px; margin-bottom: 4px; }
+.kitgenix-carrier-icon { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 20px; margin-right: 4px; }
+.kitgenix-carrier-icon img { max-width: 100%; max-height: 100%; height: auto; width: auto; display: block; }
+.kitgenix-carrier-name { font-weight: 600; }
+.kitgenix-tracking-number { margin: 4px 0; }
+.kitgenix-tracking-link { margin: 4px 0; }
+.kitgenix-tracking-link-muted { color: #6c737c; font-style: italic; }
+.kitgenix-tracking-no-shipments { margin: 0; }
+.kitgenix-card-map iframe { border-radius: 4px; }
+.kitgenix-map-message { margin-top: 6px; color: #6c737c; font-size: 12px; }
+.kitgenix-map-note { margin-top: 4px; color: #6c737c; font-size: 12px; }
+#kitgenix-order-map { width: 100%; height: 320px; border-radius: 4px; overflow: hidden; }
+.kitgenix-card-details h4 { margin: 0 0 6px; font-size: 14px; }
+.kitgenix-details-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; margin-bottom: 16px; }
+.kitgenix-details-address { margin: 0; color: #2c3338; }
+.kitgenix-details-items { margin-top: 8px; }
+.kitgenix-items-list { list-style: none; padding: 0; margin: 0; }
+.kitgenix-item { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; border-bottom: 1px solid #f0f0f0; }
+.kitgenix-item:last-child { border-bottom: none; }
+.kitgenix-item-name { font-weight: 500; }
+.kitgenix-item-qty { color: #6c737c; }
+.kitgenix-item--order { align-items: center; }
+.kitgenix-item-left { display: inline-flex; align-items: center; gap: 10px; }
+.kitgenix-item-image img { width: 40px; height: 40px; border-radius: 3px; object-fit: cover; display: block; }
+.kitgenix-item-stats { display: inline-flex; gap: 12px; color: #6c737c; }
+.kitgenix-details-note { margin: 0; color: #6c737c; }
+.kitgenix-tracking-powered { margin: 4px 0 12px; text-align: right; font-size: 11px; color: #6c737c; }
+.kitgenix-tracking-powered a { color: inherit; text-decoration: none; font-weight: 600; }
+.kitgenix-tracking-powered a:hover { text-decoration: underline; }
+@media (max-width: 782px) {
+  .kitgenix-results-grid { grid-template-columns: 1fr; }
+  .kitgenix-details-grid { grid-template-columns: 1fr; }
+}
