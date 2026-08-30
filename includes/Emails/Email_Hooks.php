@@ -129,9 +129,10 @@ final class Email_Hooks {
 
             foreach ( $shipments as $shipment ) {
 
-                $carrier = $shipment['carrier'] ?? '';
-                $number  = $shipment['tracking_number'] ?? '';
-                $url     = $shipment['tracking_url'] ?? '';
+                $carrier           = $shipment['carrier'] ?? '';
+                $number            = $shipment['tracking_number'] ?? '';
+                $url               = $shipment['tracking_url'] ?? '';
+                $delivery_estimate = $shipment['delivery_estimate'] ?? '';
 
                 printf(
                     /* translators: 1: Carrier name, 2: Tracking number */
@@ -139,6 +140,15 @@ final class Email_Hooks {
                     esc_html( Carriers::get_label( $carrier ) ),
                     esc_html( $number )
                 );
+
+                if ( $delivery_estimate ) {
+                    printf(
+                        /* translators: %s: estimated delivery date */
+                        "%s: %s\n",
+                        esc_html__( 'Estimated delivery', 'kitgenix-order-tracking-for-woocommerce' ),
+                        esc_html( $delivery_estimate )
+                    );
+                }
 
                 if ( $url ) {
                     printf(
@@ -233,15 +243,17 @@ final class Email_Hooks {
         echo '<thead><tr>';
         echo '<th class="td" scope="col" align="left">' . esc_html__( 'Carrier', 'kitgenix-order-tracking-for-woocommerce' ) . '</th>';
         echo '<th class="td" scope="col" align="left">' . esc_html__( 'Tracking', 'kitgenix-order-tracking-for-woocommerce' ) . '</th>';
+        echo '<th class="td" scope="col" align="left">' . esc_html__( 'Estimated delivery', 'kitgenix-order-tracking-for-woocommerce' ) . '</th>';
         echo '<th class="td" scope="col" align="left">' . esc_html__( 'Track', 'kitgenix-order-tracking-for-woocommerce' ) . '</th>';
         echo '</tr></thead>';
         echo '<tbody>';
 
         foreach ( $shipments as $shipment ) {
 
-            $carrier = $shipment['carrier'] ?? '';
-            $number  = $shipment['tracking_number'] ?? '';
-            $url     = $shipment['tracking_url'] ?? '';
+            $carrier           = $shipment['carrier'] ?? '';
+            $number            = $shipment['tracking_number'] ?? '';
+            $url               = $shipment['tracking_url'] ?? '';
+            $delivery_estimate = $shipment['delivery_estimate'] ?? '';
 
             echo '<tr>';
             echo '<td class="td" align="left">' . esc_html( Carriers::get_label( $carrier ) ) . '</td>';
@@ -276,6 +288,8 @@ final class Email_Hooks {
             }
 
             echo '</td>';
+
+            echo '<td class="td" align="left">' . esc_html( $delivery_estimate ?: '–' ) . '</td>';
 
             echo '<td class="td" align="left">';
             if ( $url ) {

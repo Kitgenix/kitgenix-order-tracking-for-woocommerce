@@ -12,6 +12,11 @@
 defined( 'ABSPATH' ) || exit;
 use Automattic\WooCommerce\Utilities\FeaturesUtil;
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+// -- woocommerce_email_header/_order_details/_order_meta/_customer_details/_footer are
+// WooCommerce core's own mandatory email-template hooks, not hooks this plugin defines;
+// this is the standard structure required for a custom WooCommerce email template.
+
 /**
  * Email data passed in from WooCommerce.
  *
@@ -44,7 +49,7 @@ if ( ! empty( $order->get_billing_first_name() ) ) {
 }
 ?>
 </p>
-<p><?php esc_html_e( 'Good news — part of your order has been shipped. The remaining items will be dispatched as soon as they are available.', 'kitgenix-order-tracking-for-woocommerce' ); ?></p>
+<p><?php esc_html_e( 'Good news – part of your order has been shipped. The remaining items will be dispatched as soon as they are available.', 'kitgenix-order-tracking-for-woocommerce' ); ?></p>
 <?php if ( $kitgenix_email_improvements_enabled ) : ?>
 	<p><?php esc_html_e( 'Here’s a reminder of what you’ve ordered:', 'kitgenix-order-tracking-for-woocommerce' ); ?></p>
 <?php endif; ?>

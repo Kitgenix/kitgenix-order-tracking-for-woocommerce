@@ -97,12 +97,15 @@
                 enabledEl.checked = (enabledVal === '1');
             }
 
-            modal.setAttribute('aria-hidden', 'false');
-            modal.classList.add('is-open');
-
-            var first = document.getElementById('kitgenix_order_tracking_modal_label');
-            if (first) {
-                first.focus();
+            if (window.KitgenixAdminUI && typeof window.KitgenixAdminUI.openModal === 'function') {
+                window.KitgenixAdminUI.openModal('#kitgenix-order-tracking-custom-carrier-modal');
+            } else if (modal) {
+                modal.removeAttribute('hidden');
+                modal.setAttribute('aria-hidden', 'false');
+                var first = document.getElementById('kitgenix_order_tracking_modal_label');
+                if (first) {
+                    first.focus();
+                }
             }
         }
 
@@ -110,8 +113,12 @@
             if (!modal) {
                 return;
             }
-            modal.setAttribute('aria-hidden', 'true');
-            modal.classList.remove('is-open');
+            if (window.KitgenixAdminUI && typeof window.KitgenixAdminUI.closeModal === 'function') {
+                window.KitgenixAdminUI.closeModal('#kitgenix-order-tracking-custom-carrier-modal');
+            } else {
+                modal.setAttribute('hidden', 'hidden');
+                modal.setAttribute('aria-hidden', 'true');
+            }
         }
 
         function submitDeleteForKey(key) {
@@ -126,6 +133,9 @@
             deleteForm.submit();
         }
 
+        // Note: closing the modal via [data-kitgenix-modal-close] and via the
+        // Escape key are both handled globally by kitgenix-admin-components.js
+        // once the modal is opened through window.KitgenixAdminUI.openModal().
         document.addEventListener('click', function (e) {
             var t = e.target;
             if (t && t.nodeType === 3) {
@@ -135,17 +145,10 @@
                 return;
             }
 
-            var close = t.closest('[data-kitgenix-modal-close]');
-            if (close && modal && modal.classList.contains('is-open')) {
-                e.preventDefault();
-                closeModal();
-                return;
-            }
-
             var uploadBtn = t.closest('.kitgenix-order-tracking-for-woocommerce-icon-upload');
             if (uploadBtn) {
                 e.preventDefault();
-                var wrap = uploadBtn.closest('.kitgenix-field') || uploadBtn.parentElement;
+                var wrap = uploadBtn.closest('.kitgenix-carriers-icon-field') || uploadBtn.parentElement;
                 if (!wrap) {
                     return;
                 }
@@ -176,12 +179,6 @@
                 }
                 submitDeleteForKey(key);
                 return;
-            }
-        });
-
-        document.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape' && modal && modal.classList.contains('is-open')) {
-                closeModal();
             }
         });
 

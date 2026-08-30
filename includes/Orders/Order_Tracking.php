@@ -13,9 +13,15 @@ defined( 'ABSPATH' ) || exit;
 
 use WC_Order;
 use Kitgenix\OrderTracking\Support\Carriers;
+use Kitgenix\OrderTracking\Support\Event_Log;
 
 /**
  * Core tracking functionality.
+ *
+ * Documented action hooks (see readme.txt "Hooks / filters" for full docs):
+ * - kitgenix_order_tracking_shipment_created( int $order_id, array $shipment )
+ * - kitgenix_order_tracking_shipment_updated( int $order_id, array $shipment, array $previous_shipment )
+ * - kitgenix_order_tracking_shipment_deleted( int $order_id, array $shipment )
  */
 final class Order_Tracking {
 
@@ -63,77 +69,45 @@ final class Order_Tracking {
 				continue;
 			}
 
-			$carrier         = isset( $shipment['carrier'] ) ? (string) $shipment['carrier'] : '';
-			$tracking_number = isset( $shipment['tracking_number'] ) ? (string) $shipment['tracking_number'] : '';
-
-			// Tracking number is mandatory; carrier is optional.
-			if ( '' === $tracking_number ) {
-				continue;
+			$normalised = Shipment::from_stored( $shipment );
+			if ( null !== $normalised ) {
+				$shipments[] = $normalised;
 			}
-
-			// Normalise items payload (if present) – accept array of objects, mapping, or JSON string.
-			$items = [];
-			if ( isset( $shipment['items'] ) ) {
-				$raw_items = $shipment['items'];
-
-				if ( is_string( $raw_items ) ) {
-					$decoded = json_decode( $raw_items, true );
-					if ( is_array( $decoded ) ) {
-						$raw_items = $decoded;
-					}
-				}
-
-				if ( is_array( $raw_items ) ) {
-					// Case 1: array of [ [item_id=>.., qty=>..], ... ]
-					$looks_like_array_of_objects = ! empty( $raw_items ) && isset( $raw_items[0] ) && is_array( $raw_items[0] );
-
-					if ( $looks_like_array_of_objects ) {
-						foreach ( $raw_items as $item ) {
-							$item_id = isset( $item['item_id'] ) ? (int) $item['item_id'] : 0;
-							$qty     = isset( $item['qty'] ) ? (float) $item['qty'] : 0.0;
-							if ( $item_id > 0 && $qty > 0 ) {
-								$items[] = [ 'item_id' => $item_id, 'qty' => $qty ];
-							}
-						}
-					} else {
-						// Case 2: mapping of item_id => qty OR mapping of item_id => ['qty'=>..].
-						foreach ( $raw_items as $k => $v ) {
-							$item_id = (int) $k;
-							if ( is_array( $v ) ) {
-								$qty = isset( $v['qty'] ) ? (float) $v['qty'] : 0.0;
-							} else {
-								$qty = (float) $v;
-							}
-							if ( $item_id > 0 && $qty > 0 ) {
-								$items[] = [ 'item_id' => $item_id, 'qty' => $qty ];
-							}
-						}
-					}
-				}
-			}
-
-			// Use created_at as "date shipped", but gracefully accept legacy date_shipped.
-			$created_at = '';
-			if ( isset( $shipment['created_at'] ) && '' !== (string) $shipment['created_at'] ) {
-				$created_at = (string) $shipment['created_at'];
-			} elseif ( isset( $shipment['date_shipped'] ) && '' !== (string) $shipment['date_shipped'] ) {
-				$created_at = (string) $shipment['date_shipped'];
-			}
-
-			$status = isset( $shipment['status'] ) ? (string) $shipment['status'] : 'shipped';
-
-			$shipments[] = [
-				'id'              => isset( $shipment['id'] ) ? (string) $shipment['id'] : wp_generate_uuid4(),
-				'carrier'         => $carrier,
-				'tracking_number' => $tracking_number,
-				'tracking_url'    => Carriers::build_tracking_url( $carrier, $tracking_number ),
-				'created_at'      => $created_at ? $created_at : current_time( 'mysql' ),
-				'status'          => $status,
-				'items'           => $items,
-			];
 		}
 
 		return $shipments;
+	}
+
+	/**
+	 * Remaining (not yet allocated) quantity per order item, across all
+	 * existing shipments. Used to keep partial-shipment quantities from ever
+	 * exceeding what was actually ordered.
+	 *
+	 * @param WC_Order  $order          Order instance.
+	 * @param string    $exclude_shipment_id Optional shipment id to exclude from the "already shipped" tally (e.g. the one currently being edited).
+	 *
+	 * @return array<int,float> item_id => remaining quantity.
+	 */
+	public static function get_remaining_quantities( WC_Order $order, string $exclude_shipment_id = '' ): array {
+		$remaining = [];
+		foreach ( $order->get_items() as $item_id => $item ) {
+			$remaining[ (int) $item_id ] = (float) $item->get_quantity();
+		}
+
+		foreach ( self::get_shipments( $order ) as $shipment ) {
+			if ( '' !== $exclude_shipment_id && isset( $shipment['id'] ) && (string) $shipment['id'] === $exclude_shipment_id ) {
+				continue;
+			}
+
+			foreach ( $shipment['items'] as $item ) {
+				$item_id = (int) $item['item_id'];
+				if ( isset( $remaining[ $item_id ] ) ) {
+					$remaining[ $item_id ] = max( 0.0, $remaining[ $item_id ] - (float) $item['qty'] );
+				}
+			}
+		}
+
+		return $remaining;
 	}
 
 	/**
@@ -145,86 +119,44 @@ final class Order_Tracking {
 	 * @return void
 	 */
 	public static function save_shipments( WC_Order $order, array $shipments ): void {
-		// Count newly-added tracking numbers (privacy-safe: totals only).
+		// Capture previous state for the added-tracking-numbers metric and for
+		// diffing created/updated/deleted shipments (used to fire hooks below).
 		$previous_numbers = [];
+		$previous_by_id   = [];
 		try {
 			$previous = self::get_shipments( $order );
 			foreach ( $previous as $s ) {
 				if ( isset( $s['tracking_number'] ) && '' !== (string) $s['tracking_number'] ) {
 					$previous_numbers[ (string) $s['tracking_number'] ] = true;
 				}
+				if ( isset( $s['id'] ) && '' !== (string) $s['id'] ) {
+					$previous_by_id[ (string) $s['id'] ] = $s;
+				}
 			}
 		} catch ( \Throwable $e ) {
 			// If anything goes wrong, skip counting (do not block save).
 			$previous_numbers = [];
+			$previous_by_id   = [];
+			Event_Log::record(
+				'tracking-save',
+				'skipped',
+				Event_Log::get_category_and_note( 'tracking_count_skipped' )['note'],
+				'tracking_count_skipped'
+			);
 		}
 
 		$clean = [];
-
 		foreach ( $shipments as $shipment ) {
-			$carrier         = isset( $shipment['carrier'] ) ? sanitize_text_field( (string) $shipment['carrier'] ) : '';
-			$tracking_number = isset( $shipment['tracking_number'] ) ? sanitize_text_field( (string) $shipment['tracking_number'] ) : '';
-
-			// Require tracking number; allow empty carrier (automatic/unknown).
-			if ( '' === $tracking_number ) {
+			if ( ! is_array( $shipment ) ) {
 				continue;
 			}
-
-			// Normalise items payload coming from save_meta_box() – accept array, mapping, or JSON string.
-			$items = [];
-			if ( isset( $shipment['items'] ) ) {
-				$raw_items = $shipment['items'];
-				if ( is_string( $raw_items ) ) {
-					$decoded = json_decode( $raw_items, true );
-					if ( is_array( $decoded ) ) {
-						$raw_items = $decoded;
-					}
-				}
-
-				if ( is_array( $raw_items ) ) {
-					$looks_like_array_of_objects = ! empty( $raw_items ) && isset( $raw_items[0] ) && is_array( $raw_items[0] );
-					if ( $looks_like_array_of_objects ) {
-						foreach ( $raw_items as $item ) {
-							$item_id = isset( $item['item_id'] ) ? (int) $item['item_id'] : 0;
-							$qty     = isset( $item['qty'] ) ? (float) $item['qty'] : 0.0;
-							if ( $item_id > 0 && $qty > 0 ) {
-								$items[] = [ 'item_id' => $item_id, 'qty' => $qty ];
-							}
-						}
-					} else {
-						foreach ( $raw_items as $k => $v ) {
-							$item_id = (int) $k;
-							if ( is_array( $v ) ) {
-								$qty = isset( $v['qty'] ) ? (float) $v['qty'] : 0.0;
-							} else {
-								$qty = (float) $v;
-							}
-							if ( $item_id > 0 && $qty > 0 ) {
-								$items[] = [ 'item_id' => $item_id, 'qty' => $qty ];
-							}
-						}
-					}
-				}
+			$normalised = Shipment::from_input( $shipment );
+			if ( null !== $normalised ) {
+				$clean[] = $normalised;
 			}
-
-			// Accept either date_shipped (from UI) or created_at (legacy).
-			$date_raw = '';
-			if ( isset( $shipment['date_shipped'] ) && '' !== (string) $shipment['date_shipped'] ) {
-				$date_raw = (string) $shipment['date_shipped'];
-			} elseif ( isset( $shipment['created_at'] ) && '' !== (string) $shipment['created_at'] ) {
-				$date_raw = (string) $shipment['created_at'];
-			}
-
-			$clean[] = [
-				'id'              => ! empty( $shipment['id'] ) ? sanitize_text_field( (string) $shipment['id'] ) : wp_generate_uuid4(),
-				'carrier'         => $carrier,
-				'tracking_number' => $tracking_number,
-				'tracking_url'    => Carriers::build_tracking_url( $carrier, $tracking_number ),
-				'created_at'      => $date_raw ? sanitize_text_field( $date_raw ) : current_time( 'mysql' ),
-				'status'          => isset( $shipment['status'] ) ? sanitize_text_field( (string) $shipment['status'] ) : 'shipped',
-				'items'           => $items,
-			];
 		}
+
+		$clean = self::clamp_item_quantities( $order, $clean );
 
 		// Increment metric by number of *new* unique tracking numbers.
 		$new_numbers = [];
@@ -244,25 +176,148 @@ final class Order_Tracking {
 			update_option( 'kitgenix_order_tracking_for_woocommerce_tracking_numbers_added', $existing + $delta, false );
 		}
 
-		// Save array of shipments.
-		$order->update_meta_data( self::META_KEY, $clean );
+		// Save array of shipments (only the fields actually needed in storage;
+		// 'carrier_detected' is a read-time hint and never persisted).
+		$to_store = array_map(
+			static function ( array $s ): array {
+				unset( $s['carrier_detected'] );
+				return $s;
+			},
+			$clean
+		);
+		$order->update_meta_data( self::META_KEY, $to_store );
+
+		// Index tracking numbers for fast lookup. Uses the order's own CRUD meta
+		// API (not add_post_meta()/delete_post_meta()) so the index is written to
+		// wherever this order actually lives – the custom order tables under HPOS,
+		// or wp_postmeta in legacy mode. Writing directly to wp_postmeta here would
+		// make the index invisible to wc_get_orders() meta lookups once HPOS is
+		// enabled, silently forcing every lookup onto the slow fallback path.
+		$order->delete_meta_data( self::META_TRACKING_KEY );
+		foreach ( $clean as $shipment ) {
+			if ( ! empty( $shipment['tracking_number'] ) ) {
+				$order->add_meta_data( self::META_TRACKING_KEY, (string) $shipment['tracking_number'], false );
+			}
+		}
+
 		$order->save();
 
-		// Index tracking numbers for fast lookup.
-		$post_id = $order->get_id();
+		self::fire_change_hooks( $order->get_id(), $previous_by_id, $clean );
+	}
 
-		if ( $post_id ) {
-			delete_post_meta( $post_id, self::META_TRACKING_KEY );
+	/**
+	 * Ensure the sum of item quantities allocated across all shipments never
+	 * exceeds what was actually ordered. Processes shipments in order and
+	 * clamps (never rejects outright) any quantity that would overshoot, so a
+	 * bad row can't silently overstate what has shipped. Clamped shipments are
+	 * logged for visibility.
+	 *
+	 * @param WC_Order                    $order     Order instance.
+	 * @param array<int,array<string,mixed>> $shipments Clean shipment records.
+	 *
+	 * @return array<int,array<string,mixed>>
+	 */
+	private static function clamp_item_quantities( WC_Order $order, array $shipments ): array {
+		$ordered = [];
+		foreach ( $order->get_items() as $item_id => $item ) {
+			$ordered[ (int) $item_id ] = (float) $item->get_quantity();
+		}
 
-			foreach ( $clean as $shipment ) {
-				if ( ! empty( $shipment['tracking_number'] ) ) {
-					add_post_meta(
-						$post_id,
-						self::META_TRACKING_KEY,
-						(string) $shipment['tracking_number'],
-						false
-					);
+		if ( empty( $ordered ) ) {
+			return $shipments;
+		}
+
+		$allocated = [];
+		$clamped   = false;
+
+		foreach ( $shipments as &$shipment ) {
+			$new_items = [];
+			foreach ( $shipment['items'] as $item ) {
+				$item_id = (int) $item['item_id'];
+				$qty     = (float) $item['qty'];
+
+				if ( ! isset( $ordered[ $item_id ] ) ) {
+					// Item doesn't belong to this order (or was removed) – drop it.
+					$clamped = true;
+					continue;
 				}
+
+				$already   = $allocated[ $item_id ] ?? 0.0;
+				$available = max( 0.0, $ordered[ $item_id ] - $already );
+
+				if ( $qty > $available ) {
+					$qty     = $available;
+					$clamped = true;
+				}
+
+				if ( $qty > 0 ) {
+					$allocated[ $item_id ] = $already + $qty;
+					$new_items[]           = [ 'item_id' => $item_id, 'qty' => $qty ];
+				}
+			}
+			$shipment['items'] = $new_items;
+		}
+		unset( $shipment );
+
+		if ( $clamped ) {
+			Event_Log::record(
+				'tracking-save',
+				'adjusted',
+				__( 'One or more shipment item quantities were reduced because they exceeded the quantity ordered.', 'kitgenix-order-tracking-for-woocommerce' ),
+				'quantity_clamped'
+			);
+		}
+
+		return $shipments;
+	}
+
+	/**
+	 * Diff previous vs. new shipments (by id) and fire the documented
+	 * created/updated/deleted action hooks.
+	 *
+	 * @param int                              $order_id     Order ID.
+	 * @param array<string,array<string,mixed>> $previous_by_id Previous shipments keyed by id.
+	 * @param array<int,array<string,mixed>>    $new_shipments New shipment list.
+	 */
+	private static function fire_change_hooks( int $order_id, array $previous_by_id, array $new_shipments ): void {
+		$seen_ids = [];
+
+		foreach ( $new_shipments as $shipment ) {
+			$id         = (string) ( $shipment['id'] ?? '' );
+			$seen_ids[ $id ] = true;
+
+			if ( ! isset( $previous_by_id[ $id ] ) ) {
+				/**
+				 * Fires after a new shipment is created on an order.
+				 *
+				 * @param int                  $order_id Order ID.
+				 * @param array<string,mixed>  $shipment The new shipment record.
+				 */
+				do_action( 'kitgenix_order_tracking_shipment_created', $order_id, $shipment );
+				continue;
+			}
+
+			if ( $previous_by_id[ $id ] !== $shipment ) {
+				/**
+				 * Fires after an existing shipment is updated.
+				 *
+				 * @param int                 $order_id         Order ID.
+				 * @param array<string,mixed> $shipment         The updated shipment record.
+				 * @param array<string,mixed> $previous_shipment The shipment record before the update.
+				 */
+				do_action( 'kitgenix_order_tracking_shipment_updated', $order_id, $shipment, $previous_by_id[ $id ] );
+			}
+		}
+
+		foreach ( $previous_by_id as $id => $shipment ) {
+			if ( ! isset( $seen_ids[ $id ] ) ) {
+				/**
+				 * Fires after a shipment is removed from an order.
+				 *
+				 * @param int                 $order_id Order ID.
+				 * @param array<string,mixed> $shipment The removed shipment record.
+				 */
+				do_action( 'kitgenix_order_tracking_shipment_deleted', $order_id, $shipment );
 			}
 		}
 	}
@@ -305,44 +360,42 @@ final class Order_Tracking {
 		// If no indexed match, use slower fallback (backwards compatibility).
 		if ( empty( $orders ) ) {
 			// FALLBACK: legacy data may store tracking numbers serialized inside the
-			// shipments meta. Fetch a bounded set of recent orders that have the
-			// shipments meta, then inspect the meta in PHP. This avoids a slow
-			// `meta_query` LIKE against the DB.
+			// shipments meta only (pre-dating the indexed meta key). Fetch a bounded
+			// set of recent orders that have the shipments meta via wc_get_orders()
+			// (HPOS-safe: works against the custom order tables as well as the
+			// legacy posts table, unlike a direct get_posts( post_type => shop_order )
+			// query, which only ever sees legacy post-based orders), then inspect
+			// the meta in PHP. This avoids a slow DB-side LIKE meta_query.
 			// phpcs:ignore WordPress.DB.SlowDBQuery.slow_db_query_meta_key
-			// Reason: bounded `get_posts` used to fetch a limited set of recent
-			// orders that contain the shipments meta; introspection is then
-			// performed in PHP to avoid a slow DB-side LIKE meta_query.
-			$candidate_ids = get_posts(
+			$candidate_orders = wc_get_orders(
 				[
-					'post_type'   => 'shop_order',
-					'numberposts' => 200,
-					'meta_key'    => self::META_KEY,
-					'orderby'     => 'date',
-					'order'       => 'DESC',
-					'fields'      => 'ids',
+					'limit'    => 200,
+					'type'     => 'shop_order',
+					'meta_key' => self::META_KEY,
+					'orderby'  => 'date',
+					'order'    => 'DESC',
+					'return'   => 'objects',
 				]
 			);
 
-			if ( ! empty( $candidate_ids ) ) {
-				foreach ( $candidate_ids as $pid ) {
-					$meta = get_post_meta( (int) $pid, self::META_KEY, true );
-					if ( ! is_array( $meta ) ) {
+			foreach ( $candidate_orders as $candidate ) {
+				if ( ! $candidate instanceof WC_Order ) {
+					continue;
+				}
+
+				$meta = $candidate->get_meta( self::META_KEY, true );
+				if ( ! is_array( $meta ) ) {
+					continue;
+				}
+
+				foreach ( $meta as $shipment ) {
+					if ( ! is_array( $shipment ) ) {
 						continue;
 					}
-					foreach ( $meta as $shipment ) {
-						if ( ! is_array( $shipment ) ) {
-							continue;
-						}
-						$tn = isset( $shipment['tracking_number'] ) ? (string) $shipment['tracking_number'] : '';
-						if ( $tn === $tracking_number ) {
-							$orders = wc_get_orders(
-								[
-									'limit'   => 1,
-									'include' => [ (int) $pid ],
-								]
-							);
-							break 2;
-						}
+					$tn = isset( $shipment['tracking_number'] ) ? (string) $shipment['tracking_number'] : '';
+					if ( $tn === $tracking_number ) {
+						$orders = [ $candidate ];
+						break 2;
 					}
 				}
 			}

@@ -81,6 +81,14 @@ class Email_Partially_Shipped extends WC_Email {
             $this->get_headers(),
             $this->get_attachments()
         );
+
+        /**
+         * Fires after the Kitgenix Partially Shipped notification has been sent.
+         *
+         * @param int    $order_id Order ID.
+         * @param string $email_id The WC_Email id ('kitgenix_partially_shipped').
+         */
+        do_action( 'kitgenix_order_tracking_shipment_notification_sent', $order->get_id(), $this->id );
     }
 
     /**

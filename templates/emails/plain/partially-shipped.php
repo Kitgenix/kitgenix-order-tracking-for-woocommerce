@@ -16,6 +16,11 @@ defined( 'ABSPATH' ) || exit;
  * @var string    $email_heading Email heading text.
  */
 
+// phpcs:disable WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound
+// -- woocommerce_email_order_details/_order_meta/_customer_details are WooCommerce core's
+// own mandatory email-template hooks, not hooks this plugin defines; this is the standard
+// structure required for a custom WooCommerce email template.
+
 // Ensure heading is safe plain text and escaped.
 echo esc_html( wp_strip_all_tags( (string) $email_heading ) ) . "\n\n";
 
@@ -31,7 +36,7 @@ if ( ! empty( $order->get_billing_first_name() ) ) {
 
 echo "\n\n";
 
-esc_html_e( 'Good news — part of your order has been shipped. The remaining items will be dispatched as soon as they are available.', 'kitgenix-order-tracking-for-woocommerce' );
+esc_html_e( 'Good news – part of your order has been shipped. The remaining items will be dispatched as soon as they are available.', 'kitgenix-order-tracking-for-woocommerce' );
 
 echo "\n\n";
 

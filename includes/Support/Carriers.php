@@ -676,4 +676,82 @@ final class Carriers {
 
         return str_replace( '{tracking_number}', rawurlencode( $tracking_number ), $pattern );
     }
+
+    /**
+     * Conservatively detect a carrier from the shape of a tracking number.
+     *
+     * This only ever returns a carrier when the format is distinctive enough
+     * that a wrong guess is very unlikely (e.g. UPS's "1Z" prefix, Amazon
+     * Logistics' "TBA" prefix). Ambiguous numeric-only formats shared by many
+     * couriers are intentionally NOT matched – returning null (no admin
+     * caption, no confidence) is always preferred over a wrong carrier link.
+     *
+     * The result is a *suggestion* only: callers must keep it clearly labelled
+     * as detected/unconfirmed and never silently overwrite an explicit carrier
+     * choice.
+     *
+     * @param string $tracking_number Raw tracking number.
+     *
+     * @return string|null Carrier key, or null when no confident match exists.
+     */
+    public static function detect( string $tracking_number ): ?string {
+        $number = strtoupper( trim( $tracking_number ) );
+        if ( '' === $number ) {
+            return null;
+        }
+
+        // UPS: "1Z" + 16 alphanumeric characters is essentially unique to UPS.
+        if ( preg_match( '/^1Z[0-9A-Z]{16}$/', $number ) ) {
+            $country = strtoupper( self::get_store_country() );
+            if ( 'GB' === $country ) {
+                return 'ups_uk';
+            }
+            if ( 'IE' === $country ) {
+                return 'ups_ie';
+            }
+            return 'ups_us';
+        }
+
+        // Amazon Logistics: "TBA" + 10 digits.
+        if ( preg_match( '/^TBA\d{10}$/', $number ) ) {
+            return 'amazon_logistics';
+        }
+
+        // Royal Mail / Parcelforce share the same UK tracking format and the
+        // same tracking URL in this registry, so a match here is safe even
+        // though the two brands can't be told apart from the number alone.
+        if ( preg_match( '/^[A-Z]{2}\d{9}GB$/', $number ) ) {
+            return 'royal_mail';
+        }
+
+        // USPS: standard 20-22 digit domestic formats with known service prefixes.
+        if ( preg_match( '/^(94|93|92|82)\d{18,20}$/', $number ) ) {
+            return 'usps';
+        }
+
+        // USPS: international Express/Priority format (13 chars, "US" suffix).
+        if ( preg_match( '/^[A-Z]{2}\d{9}US$/', $number ) ) {
+            return 'usps';
+        }
+
+        return null;
+    }
+
+    /**
+     * Detect a carrier and apply the result only when it maps to a currently
+     * selectable (enabled) carrier, so a detected suggestion never points at
+     * a carrier the store has disabled.
+     *
+     * @param string $tracking_number Raw tracking number.
+     *
+     * @return string|null
+     */
+    public static function detect_selectable( string $tracking_number ): ?string {
+        $detected = self::detect( $tracking_number );
+        if ( null === $detected ) {
+            return null;
+        }
+
+        return isset( self::selectable()[ $detected ] ) ? $detected : null;
+    }
 }

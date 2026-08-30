@@ -7,7 +7,9 @@ defined( 'ABSPATH' ) || exit;
 
 use WC_Order;
 use Kitgenix\OrderTracking\Orders\Order_Tracking;
+use Kitgenix\OrderTracking\Orders\Shipment;
 use Kitgenix\OrderTracking\Support\Carriers;
+use Kitgenix\OrderTracking\Support\Event_Log;
 
 final class Order_Meta_Box {
 
@@ -51,6 +53,12 @@ final class Order_Meta_Box {
 				}
 			} catch ( \Throwable $e ) {
 				// If anything goes wrong, fall back to legacy post type screen.
+				Event_Log::record(
+					'hpos-lookup',
+					'skipped',
+					Event_Log::get_category_and_note( 'hpos_lookup_failed' )['note'],
+					'hpos_lookup_failed'
+				);
 			}
 		}
 
@@ -94,19 +102,29 @@ final class Order_Meta_Box {
 		$admin_css_path = trailingslashit( KITGENIX_ORDER_TRACKING_FOR_WOOCOMMERCE_PLUGIN_DIR ) . 'assets/css/admin.css';
 		$admin_css_ver  = file_exists( $admin_css_path ) ? (string) filemtime( $admin_css_path ) : ( defined( 'KITGENIX_ORDER_TRACKING_FOR_WOOCOMMERCE_VERSION' ) ? (string) KITGENIX_ORDER_TRACKING_FOR_WOOCOMMERCE_VERSION : '1.0.5' );
 
-		wp_enqueue_style( 'kitgenix-admin-ui' );
+		wp_enqueue_style( 'kitgenix-order-tracking-for-woocommerce-admin-ui' );
 
 		wp_enqueue_style(
 			'kitgenix-order-tracking-admin',
 			KITGENIX_ORDER_TRACKING_FOR_WOOCOMMERCE_PLUGIN_URL . 'assets/css/admin.css',
-			[ 'kitgenix-admin-ui' ],
+			[ 'kitgenix-order-tracking-for-woocommerce-admin-ui' ],
 			$admin_css_ver
+		);
+
+		$components_js_path = trailingslashit( KITGENIX_ORDER_TRACKING_FOR_WOOCOMMERCE_PLUGIN_DIR ) . 'assets/js/kitgenix-admin-components.js';
+		$components_js_ver  = file_exists( $components_js_path ) ? (string) filemtime( $components_js_path ) : $admin_js_ver;
+		wp_enqueue_script(
+			'kitgenix-admin-components',
+			KITGENIX_ORDER_TRACKING_FOR_WOOCOMMERCE_PLUGIN_URL . 'assets/js/kitgenix-admin-components.js',
+			[],
+			$components_js_ver,
+			true
 		);
 
 		wp_enqueue_script(
 			'kitgenix-order-tracking-admin',
 			KITGENIX_ORDER_TRACKING_FOR_WOOCOMMERCE_PLUGIN_URL . 'assets/js/admin-order-tracking.js',
-			[ 'jquery' ],
+			[ 'jquery', 'kitgenix-admin-components' ],
 			$admin_js_ver,
 			true
 		);
@@ -146,7 +164,17 @@ final class Order_Meta_Box {
 					'unknown_carrier'         => __( 'Unknown', 'kitgenix-order-tracking-for-woocommerce' ),
 					'items_label'             => __( 'Items in this shipment:', 'kitgenix-order-tracking-for-woocommerce' ),
 					'items_section_title'     => __( 'Select which items (and quantities) are included in this shipment.', 'kitgenix-order-tracking-for-woocommerce' ),
+					'loading_items'           => __( 'Loading order items…', 'kitgenix-order-tracking-for-woocommerce' ),
+					'delivery_estimate_label' => __( 'Estimated delivery:', 'kitgenix-order-tracking-for-woocommerce' ),
+					'status_label'            => __( 'Status:', 'kitgenix-order-tracking-for-woocommerce' ),
+					'note_label'              => __( 'Internal note:', 'kitgenix-order-tracking-for-woocommerce' ),
+					'edit_shipment'           => __( 'Edit shipment', 'kitgenix-order-tracking-for-woocommerce' ),
+					'edit_title'              => __( 'Edit tracking', 'kitgenix-order-tracking-for-woocommerce' ),
+					'add_title'               => __( 'Add tracking', 'kitgenix-order-tracking-for-woocommerce' ),
+					'save'                    => __( 'Save changes', 'kitgenix-order-tracking-for-woocommerce' ),
+					'confirm'                 => __( 'Confirm', 'kitgenix-order-tracking-for-woocommerce' ),
 				],
+				'statuses' => Shipment::known_statuses(),
 			]
 		);
 	}
@@ -219,21 +247,24 @@ final class Order_Meta_Box {
 	 * @param array<string,mixed> $shipment Shipment data.
 	 */
 	private static function render_shipment_row( int $index, array $shipment ): void {
-		$id              = isset( $shipment['id'] ) ? (string) $shipment['id'] : '';
-		$carrier         = isset( $shipment['carrier'] ) ? (string) $shipment['carrier'] : '';
-		$tracking_number = isset( $shipment['tracking_number'] ) ? (string) $shipment['tracking_number'] : '';
-		$date_shipped    = isset( $shipment['created_at'] ) ? (string) $shipment['created_at'] : ( $shipment['date_shipped'] ?? '' );
-		$items           = isset( $shipment['items'] ) && is_array( $shipment['items'] ) ? $shipment['items'] : [];
+		$id                = isset( $shipment['id'] ) ? (string) $shipment['id'] : '';
+		$carrier           = isset( $shipment['carrier'] ) ? (string) $shipment['carrier'] : '';
+		$tracking_number   = isset( $shipment['tracking_number'] ) ? (string) $shipment['tracking_number'] : '';
+		$date_shipped      = isset( $shipment['created_at'] ) ? (string) $shipment['created_at'] : ( $shipment['date_shipped'] ?? '' );
+		$delivery_estimate = isset( $shipment['delivery_estimate'] ) ? (string) $shipment['delivery_estimate'] : '';
+		$status            = isset( $shipment['status'] ) && '' !== (string) $shipment['status'] ? (string) $shipment['status'] : Shipment::STATUS_SHIPPED;
+		$note              = isset( $shipment['note'] ) ? (string) $shipment['note'] : '';
+		$items             = isset( $shipment['items'] ) && is_array( $shipment['items'] ) ? $shipment['items'] : [];
+		$carrier_detected  = isset( $shipment['carrier_detected'] ) ? (string) $shipment['carrier_detected'] : '';
 
 		$carriers = Carriers::registry();
 		$label    = $carrier && isset( $carriers[ $carrier ] ) ? $carriers[ $carrier ]['label'] : $carrier;
+		$statuses = Shipment::known_statuses();
+		$status_label = $statuses[ $status ] ?? ucfirst( str_replace( '_', ' ', $status ) );
 
-		$items_json = '';
-		if ( ! empty( $items ) ) {
-			$items_json = wp_json_encode( $items );
-		}
+		$items_json = ! empty( $items ) ? (string) wp_json_encode( $items ) : '[]';
 		?>
-		<div class="kitgenix-shipment-row">
+		<div class="kitgenix-shipment-row" data-index="<?php echo esc_attr( (string) $index ); ?>">
 			<input type="hidden"
 				   name="kitgenix_shipments[<?php echo esc_attr( (string) $index ); ?>][id]"
 				   value="<?php echo esc_attr( $id ); ?>" />
@@ -249,6 +280,18 @@ final class Order_Meta_Box {
 			<input type="hidden"
 				   name="kitgenix_shipments[<?php echo esc_attr( (string) $index ); ?>][date_shipped]"
 				   value="<?php echo esc_attr( $date_shipped ); ?>" />
+
+			<input type="hidden"
+				   name="kitgenix_shipments[<?php echo esc_attr( (string) $index ); ?>][delivery_estimate]"
+				   value="<?php echo esc_attr( $delivery_estimate ); ?>" />
+
+			<input type="hidden"
+				   name="kitgenix_shipments[<?php echo esc_attr( (string) $index ); ?>][status]"
+				   value="<?php echo esc_attr( $status ); ?>" />
+
+			<input type="hidden"
+				   name="kitgenix_shipments[<?php echo esc_attr( (string) $index ); ?>][note]"
+				   value="<?php echo esc_attr( $note ); ?>" />
 
 			<?php if ( ! empty( $items ) ) : ?>
 				<?php foreach ( $items as $it ) : ?>
@@ -266,12 +309,27 @@ final class Order_Meta_Box {
 
 			<p>
 				<strong><?php esc_html_e( 'Carrier:', 'kitgenix-order-tracking-for-woocommerce' ); ?></strong>
-				<?php echo esc_html( $label ?: __( 'Unknown', 'kitgenix-order-tracking-for-woocommerce' ) ); ?><br>
+				<?php echo esc_html( $label ?: __( 'Unknown', 'kitgenix-order-tracking-for-woocommerce' ) ); ?>
+				<?php if ( '' === $carrier && '' !== $carrier_detected ) : ?>
+					<span class="kitgenix-badge-detected">
+						<?php
+						/* translators: %s: detected carrier label */
+						printf( esc_html__( 'Detected: %s (unconfirmed)', 'kitgenix-order-tracking-for-woocommerce' ), esc_html( Carriers::get_label( $carrier_detected ) ) );
+						?>
+					</span>
+				<?php endif; ?>
+				<br>
 				<strong><?php esc_html_e( 'Tracking number:', 'kitgenix-order-tracking-for-woocommerce' ); ?></strong>
-				<?php echo esc_html( $tracking_number ); ?>
+				<?php echo esc_html( $tracking_number ); ?><br>
+				<strong><?php esc_html_e( 'Status:', 'kitgenix-order-tracking-for-woocommerce' ); ?></strong>
+				<?php echo esc_html( $status_label ); ?>
 				<?php if ( $date_shipped ) : ?>
 					<br><strong><?php esc_html_e( 'Date shipped:', 'kitgenix-order-tracking-for-woocommerce' ); ?></strong>
 					<?php echo esc_html( $date_shipped ); ?>
+				<?php endif; ?>
+				<?php if ( $delivery_estimate ) : ?>
+					<br><strong><?php esc_html_e( 'Estimated delivery:', 'kitgenix-order-tracking-for-woocommerce' ); ?></strong>
+					<?php echo esc_html( $delivery_estimate ); ?>
 				<?php endif; ?>
 			</p>
 
@@ -293,7 +351,27 @@ final class Order_Meta_Box {
 				</p>
 			<?php endif; ?>
 
+			<?php if ( '' !== $note ) : ?>
+				<p class="kitgenix-shipment-note">
+					<strong><?php esc_html_e( 'Internal note (staff only):', 'kitgenix-order-tracking-for-woocommerce' ); ?></strong><br>
+					<?php echo esc_html( $note ); ?>
+				</p>
+			<?php endif; ?>
+
 			<p>
+				<button type="button"
+						class="button-link kitgenix-edit-shipment"
+						data-id="<?php echo esc_attr( $id ); ?>"
+						data-carrier="<?php echo esc_attr( $carrier ); ?>"
+						data-tracking-number="<?php echo esc_attr( $tracking_number ); ?>"
+						data-date-shipped="<?php echo esc_attr( $date_shipped ); ?>"
+						data-delivery-estimate="<?php echo esc_attr( $delivery_estimate ); ?>"
+						data-status="<?php echo esc_attr( $status ); ?>"
+						data-note="<?php echo esc_attr( $note ); ?>"
+						data-items="<?php echo esc_attr( $items_json ); ?>">
+					<?php esc_html_e( 'Edit shipment', 'kitgenix-order-tracking-for-woocommerce' ); ?>
+				</button>
+				&nbsp;
 				<button type="button" class="button-link-delete kitgenix-remove-shipment">
 					<?php esc_html_e( 'Remove shipment', 'kitgenix-order-tracking-for-woocommerce' ); ?>
 				</button>
@@ -339,71 +417,24 @@ final class Order_Meta_Box {
 			return;
 		}
 
-		// Retrieve shipments array from POST (nonce already verified above) and sanitize later per-field.
+		// Retrieve shipments array from POST (nonce already verified above). Only
+		// wp_unslash() here – every field is properly sanitised per-type by
+		// Shipment::from_input() below (which Order_Tracking::save_shipments()
+		// calls), so re-running sanitize_text_field() over the whole nested
+		// array first would strip newlines out of the internal note textarea.
 		$raw_shipments = [];
 		if ( isset( $_POST['kitgenix_shipments'] ) && is_array( $_POST['kitgenix_shipments'] ) ) { // phpcs:ignore WordPress.Security.NonceVerification.Missing
-			// Sanitize the incoming array recursively at the top-level to satisfy WPCS,
-			// then perform stricter per-field whitelisting below.
-			$raw_shipments = wc_clean( wp_unslash( $_POST['kitgenix_shipments'] ) ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
+			$raw_shipments = wp_unslash( $_POST['kitgenix_shipments'] ); // phpcs:ignore WordPress.Security.NonceVerification.Missing, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized
 		}
 
 		$shipments = [];
 
 		foreach ( $raw_shipments as $shipment ) {
-			if ( empty( $shipment['tracking_number'] ) ) {
+			if ( ! is_array( $shipment ) || empty( $shipment['tracking_number'] ) ) {
 				continue;
 			}
 
-			// Decode/normalise items (JSON string, array, or mapping) and validate.
-			$items = [];
-			if ( isset( $shipment['items'] ) ) {
-				$raw_items = $shipment['items'];
-				if ( is_string( $raw_items ) ) {
-					$decoded = json_decode( wp_unslash( $raw_items ), true );
-					if ( is_array( $decoded ) ) {
-						$raw_items = $decoded;
-					}
-				}
-				if ( is_array( $raw_items ) ) {
-					$looks_like_array_of_objects = ! empty( $raw_items ) && isset( $raw_items[0] ) && is_array( $raw_items[0] );
-					if ( $looks_like_array_of_objects ) {
-						foreach ( $raw_items as $item ) {
-							$item_id = isset( $item['item_id'] ) ? (int) $item['item_id'] : 0;
-							$qty     = isset( $item['qty'] ) ? (float) $item['qty'] : 0.0;
-							if ( $item_id > 0 && $qty > 0 ) {
-								$items[] = [ 'item_id' => $item_id, 'qty' => $qty ];
-							}
-						}
-					} else {
-						foreach ( $raw_items as $k => $v ) {
-							$item_id = (int) $k;
-							if ( is_array( $v ) ) {
-								$qty = isset( $v['qty'] ) ? (float) $v['qty'] : 0.0;
-							} else {
-								$qty = (float) $v;
-							}
-							if ( $item_id > 0 && $qty > 0 ) {
-								$items[] = [ 'item_id' => $item_id, 'qty' => $qty ];
-							}
-						}
-					}
-				}
-			}
-
-			// Whitelist carrier if known, otherwise set to empty or 'other'.
-			$carrier_raw = isset( $shipment[ 'carrier' ] ) ? sanitize_text_field( (string) $shipment['carrier'] ) : '';
-			$allowed_carriers = Carriers::keys_all();
-			$carrier = in_array( $carrier_raw, $allowed_carriers, true ) || 'other' === $carrier_raw ? $carrier_raw : '';
-
-			$shipments[] = [
-				'id'              => isset( $shipment['id'] ) ? sanitize_text_field( (string) $shipment['id'] ) : '',
-				'carrier'         => $carrier,
-				'tracking_number' => sanitize_text_field( (string) $shipment['tracking_number'] ),
-				'date_shipped'    => isset( $shipment['date_shipped'] )
-					? sanitize_text_field( (string) $shipment['date_shipped'] )
-					: '',
-				'items'           => $items,
-			];
+			$shipments[] = $shipment;
 		}
 
 		// Optional: debug what was posted vs normalized. Enable via filter returning true.
@@ -449,73 +480,110 @@ final class Order_Meta_Box {
 
 		$carriers = Carriers::selectable();
 		?>
-		<div id="kitgenix-order-tracking-for-woocommerce-modal" class="kitgenix-modal kitgenix-modal--wide" aria-hidden="true" role="dialog" aria-modal="true">
-			<div class="kitgenix-modal__backdrop" data-kitgenix-modal-close="1"></div>
-			<div class="kitgenix-modal__dialog" role="document">
-				<div class="kitgenix-modal__header">
-					<h2 class="kitgenix-modal__title"><?php esc_html_e( 'Add tracking', 'kitgenix-order-tracking-for-woocommerce' ); ?></h2>
-					<button type="button" class="button kitgenix-modal__close" data-kitgenix-modal-close="1"><?php esc_html_e( 'Close', 'kitgenix-order-tracking-for-woocommerce' ); ?></button>
+		<div id="kitgenix-order-tracking-for-woocommerce-modal" class="kitgenix-modal" hidden role="dialog" aria-modal="true" aria-labelledby="kitgenix-order-tracking-for-woocommerce-modal-title">
+			<div class="kitgenix-modal-backdrop" data-kitgenix-modal-close="1"></div>
+			<div class="kitgenix-modal-dialog kitgenix-modal-dialog-lg" role="document">
+				<div class="kitgenix-modal-header">
+					<h2 class="kitgenix-modal-title" id="kitgenix-order-tracking-for-woocommerce-modal-title"><?php esc_html_e( 'Add tracking', 'kitgenix-order-tracking-for-woocommerce' ); ?></h2>
+					<button type="button" class="kitgenix-modal-close" data-kitgenix-modal-close="1" aria-label="<?php esc_attr_e( 'Close', 'kitgenix-order-tracking-for-woocommerce' ); ?>">&times;</button>
 				</div>
 
-				<div class="kitgenix-modal__body">
+				<div class="kitgenix-modal-body">
 					<p class="description">
 						<?php esc_html_e( 'Add tracking information for this order. This will be shown in customer emails and on the tracking page.', 'kitgenix-order-tracking-for-woocommerce' ); ?>
 					</p>
+
+					<input type="hidden" class="kitgenix-order-tracking-for-woocommerce-field-editing-id" value="" />
 
 					<div class="kitgenix-order-tracking-for-woocommerce-items" data-loaded="0">
 						<!-- Order items for this shipment will be injected here by JS. -->
 					</div>
 
-					<p>
-						<label>
-							<span class="kitgenix-label"><?php esc_html_e( 'Tracking number', 'kitgenix-order-tracking-for-woocommerce' ); ?></span>
-							<input type="text" class="widefat kitgenix-order-tracking-for-woocommerce-field-number" placeholder="<?php esc_attr_e( 'e.g. 12121212', 'kitgenix-order-tracking-for-woocommerce' ); ?>">
-						</label>
-					</p>
+					<div class="kitgenix-settings-group">
+						<div class="kitgenix-setting-row kitgenix-setting-row-stacked">
+							<div class="kitgenix-setting-row-label"><label class="kitgenix-label"><?php esc_html_e( 'Tracking number', 'kitgenix-order-tracking-for-woocommerce' ); ?></label></div>
+							<div class="kitgenix-setting-row-control">
+								<input type="text" class="widefat kitgenix-order-tracking-for-woocommerce-field-number" placeholder="<?php esc_attr_e( 'e.g. 12121212', 'kitgenix-order-tracking-for-woocommerce' ); ?>">
+							</div>
+						</div>
 
-					<p>
-						<label>
-							<span class="kitgenix-label"><?php esc_html_e( 'Carrier (optional)', 'kitgenix-order-tracking-for-woocommerce' ); ?></span>
-							<select class="widefat kitgenix-order-tracking-for-woocommerce-field-carrier">
-								<option value=""><?php esc_html_e( 'Automatic Matching', 'kitgenix-order-tracking-for-woocommerce' ); ?></option>
-								<?php foreach ( $carriers as $key => $carrier ) : ?>
-									<option value="<?php echo esc_attr( $key ); ?>">
-										<?php echo esc_html( $carrier['label'] ); ?>
-									</option>
-								<?php endforeach; ?>
-							</select>
-						</label>
-					</p>
+						<div class="kitgenix-setting-row kitgenix-setting-row-stacked">
+							<div class="kitgenix-setting-row-label"><label class="kitgenix-label"><?php esc_html_e( 'Carrier (optional)', 'kitgenix-order-tracking-for-woocommerce' ); ?></label></div>
+							<div class="kitgenix-setting-row-control">
+								<select class="widefat kitgenix-order-tracking-for-woocommerce-field-carrier">
+									<option value=""><?php esc_html_e( 'Automatic Matching', 'kitgenix-order-tracking-for-woocommerce' ); ?></option>
+									<?php foreach ( $carriers as $key => $carrier ) : ?>
+										<option value="<?php echo esc_attr( $key ); ?>">
+											<?php echo esc_html( $carrier['label'] ); ?>
+										</option>
+									<?php endforeach; ?>
+								</select>
+							</div>
+						</div>
 
-					<p>
-						<label>
-							<span class="kitgenix-label"><?php esc_html_e( 'Date shipped (optional)', 'kitgenix-order-tracking-for-woocommerce' ); ?></span>
-							<input type="date" class="kitgenix-order-tracking-for-woocommerce-field-date" value="<?php echo esc_attr( current_time( 'Y-m-d' ) ); ?>">
-						</label>
-					</p>
+						<div class="kitgenix-setting-row kitgenix-setting-row-stacked">
+							<div class="kitgenix-setting-row-label"><label class="kitgenix-label"><?php esc_html_e( 'Date shipped (optional)', 'kitgenix-order-tracking-for-woocommerce' ); ?></label></div>
+							<div class="kitgenix-setting-row-control">
+								<input type="date" class="kitgenix-order-tracking-for-woocommerce-field-date" value="<?php echo esc_attr( current_time( 'Y-m-d' ) ); ?>">
+							</div>
+						</div>
 
-					<fieldset class="kitgenix-order-tracking-for-woocommerce-field-status">
-						<legend class="kitgenix-label"><?php esc_html_e( 'Update order status (optional)', 'kitgenix-order-tracking-for-woocommerce' ); ?></legend>
-						<label>
-							<input type="radio" name="kitgenix_order_tracking_for_woocommerce_status" value="no_change" checked>
-							<?php esc_html_e( "Don't change", 'kitgenix-order-tracking-for-woocommerce' ); ?>
-						</label><br>
-						<label>
-							<input type="radio" name="kitgenix_order_tracking_for_woocommerce_status" value="partial">
-							<?php esc_html_e( 'Partially shipped (custom workflow)', 'kitgenix-order-tracking-for-woocommerce' ); ?>
-						</label><br>
-						<label>
-							<input type="radio" name="kitgenix_order_tracking_for_woocommerce_status" value="completed">
-							<?php esc_html_e( 'Completed', 'kitgenix-order-tracking-for-woocommerce' ); ?>
-						</label>
-					</fieldset>
+						<div class="kitgenix-setting-row kitgenix-setting-row-stacked">
+							<div class="kitgenix-setting-row-label"><label class="kitgenix-label"><?php esc_html_e( 'Estimated delivery (optional)', 'kitgenix-order-tracking-for-woocommerce' ); ?></label></div>
+							<div class="kitgenix-setting-row-control">
+								<input type="date" class="kitgenix-order-tracking-for-woocommerce-field-delivery-estimate" value="">
+							</div>
+						</div>
+
+						<div class="kitgenix-setting-row kitgenix-setting-row-stacked">
+							<div class="kitgenix-setting-row-label"><label class="kitgenix-label"><?php esc_html_e( 'Shipment status', 'kitgenix-order-tracking-for-woocommerce' ); ?></label></div>
+							<div class="kitgenix-setting-row-control">
+								<select class="widefat kitgenix-order-tracking-for-woocommerce-field-shipment-status">
+									<?php foreach ( Shipment::known_statuses() as $status_key => $status_label ) : ?>
+										<option value="<?php echo esc_attr( $status_key ); ?>" <?php selected( $status_key, Shipment::STATUS_SHIPPED ); ?>>
+											<?php echo esc_html( $status_label ); ?>
+										</option>
+									<?php endforeach; ?>
+								</select>
+								<p class="description"><?php esc_html_e( 'Shown to the customer in the tracking timeline. This never fabricates live carrier events – it only reflects what you set here.', 'kitgenix-order-tracking-for-woocommerce' ); ?></p>
+							</div>
+						</div>
+
+						<div class="kitgenix-setting-row kitgenix-setting-row-stacked">
+							<div class="kitgenix-setting-row-label"><label class="kitgenix-label"><?php esc_html_e( 'Internal note (optional, staff only)', 'kitgenix-order-tracking-for-woocommerce' ); ?></label></div>
+							<div class="kitgenix-setting-row-control">
+								<textarea class="widefat kitgenix-order-tracking-for-woocommerce-field-note" rows="2"></textarea>
+								<p class="description"><?php esc_html_e( 'Never shown to the customer or included in emails.', 'kitgenix-order-tracking-for-woocommerce' ); ?></p>
+							</div>
+						</div>
+
+						<div class="kitgenix-setting-row kitgenix-setting-row-stacked">
+							<div class="kitgenix-setting-row-label"><span class="kitgenix-label"><?php esc_html_e( 'Update order status (optional)', 'kitgenix-order-tracking-for-woocommerce' ); ?></span></div>
+							<div class="kitgenix-setting-row-control">
+								<fieldset class="kitgenix-order-tracking-for-woocommerce-field-status">
+									<label>
+										<input type="radio" name="kitgenix_order_tracking_for_woocommerce_status" value="no_change" checked>
+										<?php esc_html_e( "Don't change", 'kitgenix-order-tracking-for-woocommerce' ); ?>
+									</label><br>
+									<label>
+										<input type="radio" name="kitgenix_order_tracking_for_woocommerce_status" value="partial">
+										<?php esc_html_e( 'Partially shipped (custom workflow)', 'kitgenix-order-tracking-for-woocommerce' ); ?>
+									</label><br>
+									<label>
+										<input type="radio" name="kitgenix_order_tracking_for_woocommerce_status" value="completed">
+										<?php esc_html_e( 'Completed', 'kitgenix-order-tracking-for-woocommerce' ); ?>
+									</label>
+								</fieldset>
+							</div>
+						</div>
+					</div>
 				</div>
 
-					<div class="kitgenix-modal__actions">
-						<button type="button" class="button" data-kitgenix-modal-close="1">
+				<div class="kitgenix-modal-footer">
+					<button type="button" class="button" data-kitgenix-modal-close="1">
 						<?php esc_html_e( 'Cancel', 'kitgenix-order-tracking-for-woocommerce' ); ?>
 					</button>
-						<button type="button" class="button button-primary" data-kitgenix-modal-confirm="1">
+					<button type="button" class="button button-primary" data-kitgenix-modal-confirm="1">
 						<?php esc_html_e( 'Confirm', 'kitgenix-order-tracking-for-woocommerce' ); ?>
 					</button>
 				</div>
@@ -573,29 +641,17 @@ final class Order_Meta_Box {
 			);
 		}
 
-		// Calculate already shipped quantities per item to limit remaining selectable qty.
-		$existing_shipments = Order_Tracking::get_shipments( $order );
-		$already_shipped    = [];
-		foreach ( $existing_shipments as $shipment ) {
-			if ( empty( $shipment['items'] ) || ! is_array( $shipment['items'] ) ) {
-				continue;
-			}
-			foreach ( $shipment['items'] as $s_item ) {
-				$sid = isset( $s_item['item_id'] ) ? (int) $s_item['item_id'] : 0;
-				$sq  = isset( $s_item['qty'] ) ? (float) $s_item['qty'] : 0.0;
-				if ( $sid && $sq > 0 ) {
-					$already_shipped[ $sid ] = ( $already_shipped[ $sid ] ?? 0 ) + $sq;
-				}
-			}
-		}
+		// Limit remaining selectable qty using the shared remaining-quantity helper
+		// (excludes the shipment currently being edited, if any, so its own
+		// already-allocated quantities don't count against themselves).
+		$exclude_shipment_id = isset( $_POST['shipment_id'] ) ? sanitize_text_field( (string) wp_unslash( $_POST['shipment_id'] ) ) : '';
+		$remaining           = Order_Tracking::get_remaining_quantities( $order, $exclude_shipment_id );
 
 		$items = [];
 
 		foreach ( $order->get_items() as $item_id => $item ) {
 			$product        = $item->get_product();
-			$ordered_qty    = (float) $item->get_quantity();
-			$shipped_qty    = isset( $already_shipped[ (int) $item_id ] ) ? (float) $already_shipped[ (int) $item_id ] : 0.0;
-			$max_qty        = max( 0.0, $ordered_qty - $shipped_qty );
+			$max_qty        = $remaining[ (int) $item_id ] ?? 0.0;
 			$product_name   = $item->get_name();
 			$sku            = $product ? $product->get_sku() : '';
 			$thumbnail_html = $product ? $product->get_image( 'thumbnail', [ 'style' => 'width:40px;height:40px;object-fit:cover;border-radius:3px;' ] ) : '';

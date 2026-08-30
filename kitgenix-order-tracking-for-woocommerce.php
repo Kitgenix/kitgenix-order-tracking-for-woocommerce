@@ -8,16 +8,16 @@
  * Author Support URI: https://kitgenix.com/plugins/kitgenix-order-tracking-for-woocommerce/support
  * Feature Request URI: https://kitgenix.com/plugins/kitgenix-order-tracking-for-woocommerce/feature-request
  * Description:       Add WooCommerce order tracking, multi-shipment support, email tracking links, and a public customer tracking page.
- * Version:           1.1.3
+ * Version:           2.0.0
  * Requires at least: 6.0
- * Tested up to:      7.0
+ * Tested up to:      7.1
  * Requires PHP:      8.1
  * Author:            Kitgenix
  * Author URI:        https://kitgenix.com/
- * Donate link:       https://buymeacoffee.com/kitgenix
+ * Donate link:       https://www.paypal.com/donate/?hosted_button_id=KALF36K6JJ9B2
  * Requires Plugins:  woocommerce
- * WC requires at least: 7.0
- * WC tested up to:   10.0
+ * WC requires at least: 10.0
+ * WC tested up to:   11.0.1
  * License:           GPLv3 or later
  * License URI:       https://www.gnu.org/licenses/gpl-3.0.html
  * Text Domain:       kitgenix-order-tracking-for-woocommerce
@@ -33,7 +33,7 @@ const KITGENIX_ORDER_TRACKING_FOR_WOOCOMMERCE_PLUGIN_FILE = __FILE__;
 const KITGENIX_ORDER_TRACKING_FOR_WOOCOMMERCE_PLUGIN_DIR  = __DIR__;
 
 if ( ! defined( 'KITGENIX_ORDER_TRACKING_FOR_WOOCOMMERCE_VERSION' ) ) {
-    define( 'KITGENIX_ORDER_TRACKING_FOR_WOOCOMMERCE_VERSION', '1.1.3' );
+    define( 'KITGENIX_ORDER_TRACKING_FOR_WOOCOMMERCE_VERSION', '2.0.0' );
 }
 
 if (!defined('KITGENIX_ORDER_TRACKING_FOR_WOOCOMMERCE_PLUGIN_URL')) {
@@ -48,8 +48,8 @@ if ( ! function_exists( 'kitgenix_get_admin_menu_icon' ) ) {
     function kitgenix_get_admin_menu_icon( string $plugin_file ): string {
         $plugin_dir = dirname( $plugin_file ) . '/';
         $icon_paths = [
-            $plugin_dir . 'assets/images/logos/kitgenix-wordpress-admin-icon.svg',
-            $plugin_dir . 'assets/images/logos/kitgenix-custom-wordpress-admin-icon.svg',
+            $plugin_dir . 'assets/images/logos/kitgenix-wordpress-admin-menu-favicon.svg',
+            $plugin_dir . 'assets/images/logos/kitgenix-black-favicon.svg',
         ];
 
         foreach ( $icon_paths as $icon_path ) {
@@ -419,11 +419,19 @@ if ( ! function_exists( 'kitgenix_render_admin_page' ) ) {
             ],
             [
                 'id'       => 'multistore',
-                'name'     => __( 'MultiStore Sync', 'kitgenix-order-tracking-for-woocommerce' ),
-                'slug'     => 'kitgenix-multistore-sync',
-                'file'     => 'kitgenix-multistore-sync/kitgenix-multistore-sync.php',
-                'page'     => 'kitgenix-multistore-sync',
+                'name'     => __( 'MultiStore for WooCommerce', 'kitgenix-order-tracking-for-woocommerce' ),
+                'slug'     => 'kitgenix-multistore-sync-for-woocommerce',
+                'file'     => 'kitgenix-multistore-sync-for-woocommerce/kitgenix-multistore-sync-for-woocommerce.php',
+                'page'     => 'kitgenix-multistore-sync-for-woocommerce',
                 'requires' => __( 'Sync WooCommerce products, prices, media, and metadata between multiple stores with a secure master-child architecture.', 'kitgenix-order-tracking-for-woocommerce' ),
+            ],
+            [
+                'id'       => 'image_optimizer',
+                'name'     => __( 'Image Optimizer', 'kitgenix-order-tracking-for-woocommerce' ),
+                'slug'     => 'kitgenix-image-optimizer',
+                'file'     => 'kitgenix-image-optimizer/kitgenix-image-optimizer.php',
+                'page'     => 'kitgenix-image-optimizer',
+                'requires' => __( 'Optimize, compress, and resize images in your WordPress media library with automatic on-upload processing and bulk optimization tools.', 'kitgenix-order-tracking-for-woocommerce' ),
             ],
             [
                 'id'       => 'affiliate',
@@ -444,15 +452,17 @@ if ( ! function_exists( 'kitgenix_render_admin_page' ) ) {
         $wporg_active_installs = kitgenix_hub_get_wporg_active_installs( $slugs );
         $wporg_ratings        = kitgenix_hub_get_wporg_ratings( $slugs );
         $wporg_media          = kitgenix_hub_get_wporg_media( $slugs );
-        $logo_url             = plugins_url( 'assets/images/logos/kitgenix-favicon-purple.svg', __FILE__ );
+        $logo_url             = plugins_url( 'assets/images/logos/kitgenix-primary-favicon.svg', __FILE__ );
 
-        echo '<div class="wrap plugin-install-php kitgenix-hub-wrap">'
-            . '<div class="kitgenix-hub">'
+        echo '<div class="wrap kitgenix-admin-app plugin-install-php">'
             . '<div class="kitgenix-hub-header">'
             . '<div class="kitgenix-hub-brand">'
-            . '<img class="kitgenix-hub-logo" src="' . esc_url( $logo_url ) . '" alt="' . esc_attr__( 'Kitgenix', 'kitgenix-order-tracking-for-woocommerce' ) . '" />'
+            . '<span class="kitgenix-topbar-brand">'
+            . '<img class="kitgenix-hub-logo" src="' . esc_url( $logo_url ) . '" alt="' . esc_attr__( 'Kitgenix', 'kitgenix-order-tracking-for-woocommerce' ) . '" width="30" height="30" />'
+            . '</span>'
+            . '<span class="kitgenix-topbar-divider" aria-hidden="true"></span>'
             . '<div class="kitgenix-hub-brand-copy">'
-            . '<h1 class="kitgenix-hub-title">' . esc_html__( 'Discover and manage every Kitgenix plugin from one screen.', 'kitgenix-order-tracking-for-woocommerce' ) . '</h1>'
+            . '<h1 class="kitgenix-hub-title">' . esc_html__( 'Kitgenix', 'kitgenix-order-tracking-for-woocommerce' ) . '</h1>'
             . '<p class="kitgenix-hub-description">' . esc_html__( 'Install, activate, open, and review Kitgenix plugins.', 'kitgenix-order-tracking-for-woocommerce' ) . '</p>'
             . '</div>'
             . '</div>'
@@ -469,6 +479,8 @@ if ( ! function_exists( 'kitgenix_render_admin_page' ) ) {
             . '<a href="https://github.com/kitgenix" target="_blank" rel="noopener noreferrer" aria-label="GitHub" title="GitHub"><img src="' . esc_url( plugins_url( 'assets/images/social-media/github-solid.svg', __FILE__ ) ) . '" alt="" width="13" height="13" aria-hidden="true" /><span class="screen-reader-text">GitHub</span></a>'
             . '</div>'
             . '</div>'
+            . '<div class="kitgenix-hub-wrap">'
+            . '<div class="kitgenix-hub">'
             . '<div class="kitgenix-hub-grid">';
         foreach ( $plugins as $p ) {
             $id = (string) $p['id'];
@@ -576,7 +588,7 @@ if ( ! function_exists( 'kitgenix_render_admin_page' ) ) {
                 . '</div>';
         }
 
-        echo '</div></div></div>';
+        echo '</div></div></div></div>';
     }
 }
 
@@ -586,15 +598,15 @@ if ( ! function_exists( 'kitgenix_order_tracking_for_woocommerce_register_admin_
             return;
         }
 
-        if ( function_exists( 'wp_style_is' ) && wp_style_is( 'kitgenix-admin-ui', 'registered' ) ) {
+        if ( function_exists( 'wp_style_is' ) && wp_style_is( 'kitgenix-order-tracking-for-woocommerce-admin-ui', 'registered' ) ) {
             return;
         }
 
-        $ver      = defined( 'KITGENIX_ORDER_TRACKING_FOR_WOOCOMMERCE_VERSION' ) ? (string) KITGENIX_ORDER_TRACKING_FOR_WOOCOMMERCE_VERSION : '1.1.3';
+        $ver      = defined( 'KITGENIX_ORDER_TRACKING_FOR_WOOCOMMERCE_VERSION' ) ? (string) KITGENIX_ORDER_TRACKING_FOR_WOOCOMMERCE_VERSION : '2.0.0';
         $css_file = plugin_dir_path( __FILE__ ) . 'assets/css/kitgenix-admin-ui.css';
         $css_ver  = file_exists( $css_file ) ? (string) filemtime( $css_file ) : $ver;
 
-        wp_register_style( 'kitgenix-admin-ui', plugins_url( 'assets/css/kitgenix-admin-ui.css', __FILE__ ), [], $css_ver );
+        wp_register_style( 'kitgenix-order-tracking-for-woocommerce-admin-ui', plugins_url( 'assets/css/kitgenix-admin-ui.css', __FILE__ ), [], $css_ver );
     }
 }
 add_action( 'admin_enqueue_scripts', 'kitgenix_order_tracking_for_woocommerce_register_admin_ui_style', 5 );
@@ -617,12 +629,12 @@ function kitgenix_order_tracking_for_woocommerce_enqueue_hub_assets( string $hoo
         return;
     }
 
-    $ver = defined( 'KITGENIX_ORDER_TRACKING_FOR_WOOCOMMERCE_VERSION' ) ? (string) KITGENIX_ORDER_TRACKING_FOR_WOOCOMMERCE_VERSION : '1.1.3';
+    $ver = defined( 'KITGENIX_ORDER_TRACKING_FOR_WOOCOMMERCE_VERSION' ) ? (string) KITGENIX_ORDER_TRACKING_FOR_WOOCOMMERCE_VERSION : '2.0.0';
     wp_register_style( 'kitgenix-hub', plugins_url( 'assets/css/kitgenix-hub.css', __FILE__ ), [], $ver );
     wp_enqueue_style( 'kitgenix-hub' );
 
-    wp_register_style( 'kitgenix-admin-ui', plugins_url( 'assets/css/kitgenix-admin-ui.css', __FILE__ ), [], $ver );
-    wp_enqueue_style( 'kitgenix-admin-ui' );
+    wp_register_style( 'kitgenix-order-tracking-for-woocommerce-admin-ui', plugins_url( 'assets/css/kitgenix-admin-ui.css', __FILE__ ), [], $ver );
+    wp_enqueue_style( 'kitgenix-order-tracking-for-woocommerce-admin-ui' );
 }
 add_action( 'admin_enqueue_scripts', 'kitgenix_order_tracking_for_woocommerce_enqueue_hub_assets' );
 

@@ -11,7 +11,7 @@ defined( 'ABSPATH' ) || exit;
  * in the admin Log tab.
  *
  * Storage format (per entry):
- *   [ 'time' => int, 'context' => string, 'outcome' => string, 'note' => string ]
+ *   [ 'time' => int, 'context' => string, 'outcome' => string, 'note' => string, 'code' => string ]
  */
 final class Event_Log {
 
@@ -24,14 +24,16 @@ final class Event_Log {
      * @param string $context  Short slug (e.g. 'carriers-saved', 'tracking-updated').
      * @param string $outcome  'success', 'error', or any short outcome label.
      * @param string $note     Optional plain-English detail.
+     * @param string $code     Optional internal event code (see get_category_and_note()).
      */
-    public static function record( string $context, string $outcome, string $note = '' ): void {
+    public static function record( string $context, string $outcome, string $note = '', string $code = '' ): void {
         $log   = self::get_raw_log();
         $log[] = [
             'time'    => time(),
             'context' => sanitize_text_field( $context ),
             'outcome' => sanitize_text_field( $outcome ),
             'note'    => sanitize_text_field( $note ),
+            'code'    => sanitize_text_field( $code ),
         ];
 
         if ( count( $log ) > self::MAX_ENTRIES ) {
@@ -86,5 +88,87 @@ final class Event_Log {
         }
 
         return implode( "\n", $lines );
+    }
+
+    /**
+     * Map an internal event code to a plain-English category, explanation, and
+     * recommended action for a non-technical site owner.
+     *
+     * Distinguishes genuine problems (need action) from likely false positives
+     * (non-blocking, or a routine malformed CSV row) so the Log tab can be read
+     * at a glance.
+     *
+     * @return array{category:string,note:string,action:string}
+     */
+    public static function get_category_and_note( string $code ): array {
+        $map = self::code_reference();
+
+        return $map[ $code ] ?? [
+            'category' => $code !== '' ? $code : __( 'Unrecognised', 'kitgenix-order-tracking-for-woocommerce' ),
+            'note'     => __( 'No further detail is available for this event code.', 'kitgenix-order-tracking-for-woocommerce' ),
+            'action'   => __( 'None.', 'kitgenix-order-tracking-for-woocommerce' ),
+        ];
+    }
+
+    /**
+     * Ordered list of all known event codes, for the settings-page reference table.
+     *
+     * @return array<int,string>
+     */
+    public static function get_known_codes(): array {
+        return array_keys( self::code_reference() );
+    }
+
+    /**
+     * @return array<string,array{category:string,note:string,action:string}>
+     */
+    private static function code_reference(): array {
+        return [
+            'carriers-saved'              => [
+                'category' => __( 'Settings saved', 'kitgenix-order-tracking-for-woocommerce' ),
+                'note'     => __( 'Carrier settings were saved from the admin settings page.', 'kitgenix-order-tracking-for-woocommerce' ),
+                'action'   => __( 'None.', 'kitgenix-order-tracking-for-woocommerce' ),
+            ],
+            'file_unreadable'             => [
+                'category' => __( 'Import file error', 'kitgenix-order-tracking-for-woocommerce' ),
+                'note'     => __( 'The uploaded CSV file could not be read from the server – usually a broken upload or a file permissions issue.', 'kitgenix-order-tracking-for-woocommerce' ),
+                'action'   => __( 'Likely not a system problem. Ask the user to re-upload the file; if it keeps happening, check server file permissions and disk space.', 'kitgenix-order-tracking-for-woocommerce' ),
+            ],
+            'file_open_failed'            => [
+                'category' => __( 'Import file error', 'kitgenix-order-tracking-for-woocommerce' ),
+                'note'     => __( 'The CSV file exists but could not be opened for reading.', 'kitgenix-order-tracking-for-woocommerce' ),
+                'action'   => __( 'Likely a corrupted or unusually-encoded file, not a system problem. Ask for a fresh CSV export and try again.', 'kitgenix-order-tracking-for-woocommerce' ),
+            ],
+            'missing_headers'             => [
+                'category' => __( 'Malformed CSV', 'kitgenix-order-tracking-for-woocommerce' ),
+                'note'     => __( 'The CSV file has no header row, or the first row was empty.', 'kitgenix-order-tracking-for-woocommerce' ),
+                'action'   => __( 'Likely a malformed CSV row, not a system problem. Add a header row (order_id, tracking_number, carrier, …) and re-upload.', 'kitgenix-order-tracking-for-woocommerce' ),
+            ],
+            'invalid_headers'             => [
+                'category' => __( 'Malformed CSV', 'kitgenix-order-tracking-for-woocommerce' ),
+                'note'     => __( 'The CSV header row is missing the required order_id and/or tracking_number columns.', 'kitgenix-order-tracking-for-woocommerce' ),
+                'action'   => __( 'Likely a malformed CSV row, not a system problem. Fix the header row to include order_id and tracking_number, then re-upload.', 'kitgenix-order-tracking-for-woocommerce' ),
+            ],
+            'import_unexpected_exception' => [
+                'category' => __( 'Unexpected import error', 'kitgenix-order-tracking-for-woocommerce' ),
+                'note'     => __( 'Something beyond a malformed CSV went wrong while importing shipments – not one of the recognised file or header problems.', 'kitgenix-order-tracking-for-woocommerce' ),
+                'action'   => __( 'More concerning than a malformed CSV. Check the site\'s PHP error log; if it repeats, this may be a real bug worth reporting.', 'kitgenix-order-tracking-for-woocommerce' ),
+            ],
+            'date_parse_failed'           => [
+                'category' => __( 'Date parse skipped', 'kitgenix-order-tracking-for-woocommerce' ),
+                'note'     => __( 'A shipment\'s stored date could not be parsed while building analytics charts.', 'kitgenix-order-tracking-for-woocommerce' ),
+                'action'   => __( 'None – non-blocking. The shipment is still counted everywhere except date-based charts.', 'kitgenix-order-tracking-for-woocommerce' ),
+            ],
+            'tracking_count_skipped'      => [
+                'category' => __( 'Tracking count skipped', 'kitgenix-order-tracking-for-woocommerce' ),
+                'note'     => __( 'Existing tracking numbers could not be counted before a save, so the "new tracking numbers added" total was skipped for this save.', 'kitgenix-order-tracking-for-woocommerce' ),
+                'action'   => __( 'None – non-blocking, the shipment save itself still succeeded.', 'kitgenix-order-tracking-for-woocommerce' ),
+            ],
+            'hpos_lookup_failed'          => [
+                'category' => __( 'HPOS lookup fallback', 'kitgenix-order-tracking-for-woocommerce' ),
+                'note'     => __( 'The plugin could not confirm whether High-Performance Order Storage is enabled, so it used the classic order-edit screen instead.', 'kitgenix-order-tracking-for-woocommerce' ),
+                'action'   => __( 'None – non-blocking, the order tracking meta box still displays correctly.', 'kitgenix-order-tracking-for-woocommerce' ),
+            ],
+        ];
     }
 }
