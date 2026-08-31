@@ -1,97 +1,130 @@
 === Kitgenix Order Tracking for WooCommerce ===
 Contributors: kitgenix
 Donate link: https://www.paypal.com/donate/?hosted_button_id=KALF36K6JJ9B2
-Tags: woocommerce, order tracking, shipment tracking, shipping, carrier
+Tags: woocommerce, order tracking, shipment tracking, tracking number, shipping
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.1
 Stable tag: 2.0.0
-Requires Plugins: woocommerce
-WC requires at least: 10.0
-WC tested up to: 11.0.1
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
-Plugin URI: https://wordpress.org/plugins/kitgenix-order-tracking-for-woocommerce/
-Author: Kitgenix
-Author URI: https://kitgenix.com/
-Author Plugin URI: https://kitgenix.com/plugins/kitgenix-order-tracking-for-woocommerce
-Documentation URI: https://kitgenix.com/plugins/kitgenix-order-tracking-for-woocommerce/documentation
-Support URI: https://wordpress.org/support/plugin/kitgenix-order-tracking-for-woocommerce/
-Author Support URI: https://kitgenix.com/plugins/kitgenix-order-tracking-for-woocommerce/support
-Feature Request URI: https://kitgenix.com/plugins/kitgenix-order-tracking-for-woocommerce/feature-request
 
-Add shipment tracking numbers to WooCommerce orders, notify customers by email, and give them a self-service order tracking page.
+Add WooCommerce shipment tracking, multiple parcels, tracking emails and a self-service customer tracking page.
 
 == Description ==
 
-**Kitgenix Order Tracking for WooCommerce** adds shipment tracking to your store without a heavyweight shipping suite. Record a tracking number and carrier against any order, let WooCommerce emails carry that information automatically, and give customers a self-service tracking page so they stop emailing to ask "where is my order?"
+**Kitgenix Order Tracking for WooCommerce** adds shipment tracking to WooCommerce orders so store staff can record one or more parcels, allocate order items to shipments, include tracking details in customer emails and offer a self-service tracking page.
 
-The plugin stores tracking numbers and links to each carrier's own tracking page; it does not call carrier APIs to fetch live delivery status. Every "shipped", "in transit", "delivered" or "exception" state shown anywhere in the plugin is set by your staff, not pulled automatically from a courier.
+The plugin is intentionally different from a live carrier-management platform. It stores the tracking number, selected carrier, tracking URL and staff-managed shipment status; it does **not** call courier APIs to obtain live delivery scans and it does not buy labels or book collections.
 
-= Key features =
+That makes it suitable for stores that already fulfil orders through their preferred courier workflow but need a consistent place in WooCommerce to record and communicate tracking information.
 
-* **Multiple shipments per order** – record split parcels, partial shipments, and replacements, each with its own carrier and tracking number.
-* **Per-item shipment allocation** – choose which order items (and quantities) belong to each shipment, so staff and customers can see what's shipped and what's still outstanding. Allocated quantities are automatically capped at what was actually ordered.
-* **27 built-in carriers** with ready-made tracking URL patterns – including Royal Mail, Parcelforce, Evri, DPD (UK & Ireland), An Post, DHL, UPS (US, UK & Ireland), FedEx, USPS, Canada Post, Australia Post, NZ Post, and more – plus an "Other" option for couriers not in the list.
-* **Conservative carrier auto-detection** – recognisable tracking number formats (UPS, Amazon Logistics, Royal Mail/Parcelforce, USPS) are suggested automatically as an unconfirmed suggestion staff can accept or override – never a silent guess, and never applied to a carrier the store has disabled.
-* **Regional carrier packs** – apply a ready-made carrier set for UK & Ireland, Europe, North America, Australia & New Zealand, or a global mixed-carrier list, or hand-pick and reorder carriers yourself.
-* **Custom carriers** – add couriers that aren't built in, with your own tracking URL pattern and an icon uploaded from the media library.
-* **CSV bulk import and export** – export every tracked shipment to CSV and re-import edited files to update many orders in one pass, ideal for spreadsheet-based fulfilment.
-* **Self-service customer tracking page** – a shortcode-based page where customers look up tracking by order number and billing email, or by tracking number alone, with no account or login required.
-* **Country-aware postcode verification** – full addresses, the illustrative route map, and item-level shipment detail are only shown once the customer confirms the postcode, ZIP code, or postal code on the order.
-* **"Partially shipped" order status and email** – a dedicated WooCommerce order status and matching customer email for stores that ship orders in stages.
-* **Tracking Analytics dashboard** – shipment coverage, time-to-ship, carrier and status breakdowns, exceptions, and privacy-safe lookup totals for your store.
-* **Optional route map** – an illustrative store-to-customer route using bundled Leaflet and OpenStreetMap tiles, no Google Maps or API key required.
-* **HPOS compatible** – works on both the classic order-edit screen and WooCommerce's High-Performance Order Storage screen.
-* **No custom database tables** – shipments are stored as order meta, so your existing backups and WooCommerce data tools behave as expected.
+Built by [Kitgenix](https://kitgenix.com/).
 
-= Adding tracking information =
+= WooCommerce Shipment Tracking Features =
 
-Tracking is added from the **Kitgenix Order Tracking** meta box on the WooCommerce order edit screen. The "Add tracking" modal lets staff enter:
+* Add multiple shipments to one WooCommerce order.
+* Store a tracking number and carrier for each shipment.
+* Allocate specific order items and quantities to a shipment.
+* Prevent allocated quantities exceeding what the customer ordered.
+* Use built-in carrier tracking URL patterns.
+* Create custom carrier entries for services not included by default.
+* Track staff-managed shipment states including shipped, in transit, delivered, exception, returned and cancelled.
+* Add tracking information to supported WooCommerce customer emails.
+* Provide a dedicated partially-shipped workflow/status/email where configured by the plugin.
+* Give customers a self-service order tracking page.
+* Support a public tracking form with order-identification checks.
+* Show tracking information in My Account for authenticated customers.
+* Provide tracking analytics/reporting in wp-admin.
+* Import/export tracking information in supported bulk workflows.
+* Optional map presentation using OpenStreetMap tiles and Nominatim geocoding.
+* Developer hooks/filters for extending carrier and tracking behaviour.
+* Declare WooCommerce HPOS compatibility.
 
-* a tracking number (required),
-* a carrier (optional – choose from the list, leave it to automatic detection, or select "Other" for a custom link),
-* the items and quantities included in the shipment,
-* a shipped date and an optional estimated delivery date,
-* a shipment status for your own records (Shipped, In transit, Delivered, Exception, Returned, Cancelled),
-* an internal note visible only to staff, and
-* an optional order status update (leave unchanged, mark Partially shipped, or mark Completed).
+= Multiple Shipments and Partial Fulfilment =
 
-For fulfilment teams working from spreadsheets, the **Bulk Tools** tab under Kitgenix → Order Tracking exports all tracked shipments to CSV (order ID, carrier, tracking number, dates, status, and per-item quantities) and re-imports edited files, either appending new shipments or replacing all shipments on the matched orders.
+An order can contain more than one shipment. Each shipment has its own tracking number, carrier and status, making the plugin suitable for split parcels, backordered lines, replacements or orders dispatched from more than one fulfilment location.
 
-= Customer notifications and tracking page =
+Items and quantities can be assigned to an individual shipment. Allocation is bounded by the quantities actually ordered, so the tracking UI cannot legitimately claim that more units were shipped than exist on the order line.
 
-When shipments exist on an order, tracking details – carrier, tracking number, a link to the carrier's tracking page, and any estimated delivery date – appear automatically in:
+The remaining/unallocated items can continue to represent what has not yet been included in a parcel.
 
-* the WooCommerce **Completed Order** email, and
-* the plugin's own **Partially Shipped** email (sent when an order is moved to the "Partially shipped" status).
+= Shipment Statuses =
 
-Duplicate-output guarding keeps the tracking block from appearing twice if email templates are customised.
+The plugin defines internal tracking states including:
 
-Customers can also look up tracking themselves on any page using the `[kitgenix_tracking_form]` shortcode, by order number and billing email or by tracking number alone. Full addresses, the optional route map, and item-level shipment detail are only revealed once the postcode, ZIP code, or postal code on the order has been confirmed, using country-aware matching rather than a single postcode format.
+* Shipped.
+* In transit.
+* Delivered.
+* Exception.
+* Returned.
+* Cancelled.
+
+These values are controlled by store staff or other code that integrates with the plugin. They are not automatically fetched from Royal Mail, DPD, UPS, FedEx or another courier.
+
+That distinction is important: a "Delivered" status in the plugin means the WooCommerce store has set that status, not that Kitgenix independently confirmed delivery with the carrier.
+
+= Built-In and Custom Carriers =
+
+The carrier manager includes a set of ready-made carriers with tracking URL patterns. The codebase includes services for the UK, Ireland and international markets, including Royal Mail, Parcelforce/related services represented in the carrier set, DPD, An Post, DHL, UPS, FedEx, USPS, Canada Post, Australia Post, NZ Post and others.
+
+A custom/Other carrier option is available where a courier is not built in. A custom tracking URL pattern can contain the tracking-number placeholder so customer links still lead to the relevant courier tracking page.
+
+= Customer Email Notifications =
+
+Tracking information can be inserted into WooCommerce email flows. The plugin also includes a dedicated email class/workflow for partially shipped orders so customers can be informed when only part of an order has been dispatched.
+
+Because tracking data is stored on the WooCommerce order, customer-facing output can reuse the same shipment records rather than staff copying numbers into several separate systems.
+
+= Self-Service Tracking Page =
+
+The frontend tracking experience lets a customer look up tracking information using supported order-identification details. Logged-in customers can see order-related tracking through My Account, while the public form validates the supplied order data before showing sensitive order context.
+
+The output intentionally limits customer information rather than exposing a full order record to anyone who guesses an order number.
+
+A shortcode is registered for the tracking form:
+
+`[kitgenix_tracking_form]`
 
 = Tracking Analytics =
 
-The Tracking Analytics screen (Kitgenix → Order Tracking) shows shipment coverage, average and median time-to-ship, shipments and exceptions by carrier and status, recent shipments, and privacy-safe totals for tracking numbers added and successful customer lookups. Results are computed in batches and cached briefly in transients to keep the dashboard responsive.
+The plugin includes an admin analytics area for reviewing shipment/tracking activity. Reporting is based on the tracking data stored with WooCommerce orders; it is not a remote courier analytics product and does not profile visitors across websites.
 
-= Carrier management =
+= Optional Route Map =
 
-From the Carriers tab you can apply a recommended regional carrier pack, enable or disable built-in carriers, reorder them by priority, and add custom carriers with their own tracking URL pattern and icon.
+Where enabled by the frontend template/settings, the tracking page can display a simple map between the store origin and customer destination. The browser uses the bundled Leaflet library with OpenStreetMap map tiles and can query the public Nominatim geocoding service to translate the displayed addresses into coordinates.
 
-= Developer features =
+The map is illustrative. The code draws a straight line between geocoded points; it is not a live courier route, vehicle location or turn-by-turn delivery route.
 
-* Action hooks fire when shipments are created, updated, or deleted, and when the Partially Shipped notification is sent.
-* Filters let you override the Nominatim geocoding endpoint and contact email used by the optional route map, and enable a debug order note on save.
-* No custom database tables – shipments are stored as order meta.
-* Translation-ready with a bundled .pot file.
+No Google Maps API key is required by this implementation.
 
-See the Developers section further down this page for exact hook names, meta keys, and nonce actions.
+= Bulk Portability =
 
-= Compatibility =
+The plugin includes import/export functionality for tracking records so stores can move or update shipment information in bulk rather than editing every order manually.
 
-Requires WooCommerce to be installed and active. The plugin declares compatibility with WooCommerce's custom order tables (HPOS) and works on both the classic order-edit screen and the HPOS order-edit screen. Leaflet (for the optional map) is bundled with the plugin – no CDN or external script is loaded for it.
+Administrators should test bulk imports on a staging copy first when mapping external fulfilment data, especially when orders can have multiple shipments or item allocations.
 
-This plugin is part of the free Kitgenix plugin family for WooCommerce (PDF invoicing, stock sync, custom product tabs, and more) and includes an optional "Kitgenix" admin page for discovering and managing other Kitgenix plugins.
+= Privacy and Data =
+
+Shipment records are stored with WooCommerce orders. The plugin does not send tracking records to a Kitgenix tracking service. Clicking a courier link takes the customer to that carrier's own website, which then operates under the carrier's own privacy terms.
+
+If the optional route map is used, address text is sent from the customer's browser to the configured Nominatim endpoint for geocoding and map tiles are requested from OpenStreetMap infrastructure. Those services are documented in **External Services** below.
+
+= What This Plugin Does Not Do =
+
+* It does not buy or print shipping labels.
+* It does not book courier collections.
+* It does not pull live tracking scans from carrier APIs.
+* It does not automatically know when a parcel is delivered unless another user/integration updates the status.
+* It does not replace a warehouse management or fulfilment platform.
+
+= Typical Uses =
+
+* WooCommerce stores that dispatch with several different couriers.
+* Orders split into multiple parcels.
+* Partial shipments where customers need to know which items have left.
+* Support teams that want tracking visible in the order instead of private notes.
+* Stores that want a branded self-service tracking lookup without a hosted Kitgenix account.
 
 == Installation ==
 
@@ -163,8 +196,7 @@ No customer or store data is sent to Kitgenix. The plugin adds an optional "Kitg
 3. Tracking results: shipment tracking, order details, addresses, and item shipped/not-shipped status.
 4. WooCommerce Completed Order email showing the Shipment Tracking section.
 5. The plugin's Partially Shipped email for staged fulfilment.
-6. The optional route map from store to delivery address, powered by Leaflet and OpenStreetMap.
-7. The Tracking Analytics overview: shipment coverage, time-to-ship, exceptions, and lookup totals.
+6. The Tracking Analytics overview: shipment coverage, time-to-ship, exceptions, and lookup totals.
 
 == Developers ==
 
@@ -252,7 +284,7 @@ Major admin redesign around the shared Kitgenix design system, a new Kitgenix Hu
 
 == Changelog ==
 
-= 2.0.0 (25 August 2026) =
+= 2.0.0 (31 August 2026) =
 
 * New: Redesigned the entire admin experience around the shared Kitgenix design system – a sticky topbar with an Analytics dropdown menu, live settings search, dark/light theme toggle, and mobile hamburger menu replaces the previous page header and tab strip.
 * New: Added a redesigned central Kitgenix Hub page for discovering, installing, activating, and reviewing every Kitgenix plugin from one screen, including the new Image Optimizer plugin.
