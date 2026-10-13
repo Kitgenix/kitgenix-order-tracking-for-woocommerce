@@ -5,9 +5,10 @@ Tags: woocommerce, order tracking, shipment tracking, tracking number, shipping
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 2.0.0
+Stable tag: 2.1.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
+PluginScore Verification: pluginscore-verify-3f946ebe63cd6c2183fe1f7f05d768e6
 
 Add WooCommerce shipment tracking, multiple parcels, tracking emails and a self-service customer tracking page.
 
@@ -279,10 +280,16 @@ Built with ❤︎ by @kitgenix - https://kitgenix.com
 
 == Upgrade Notice ==
 
-= 2.0.0 =
-Major admin redesign around the shared Kitgenix design system, a new Kitgenix Hub page, and reworked Analytics/Carriers/Bulk Tools/Support/Log screens. Recommended for all websites.
+= 2.1.0 =
+Version 2.1.0 is recommended for all sites.
 
 == Changelog ==
+
+= 2.1.0 (13 October 2026) =
+
+* New: Added a configurable log auto-delete setting (7/14/30 days) to automatically remove old event log entries.
+* New: Added a "Request a Feature" button to the Need Help? sidebar, linking directly to this plugin's page on the Kitgenix roadmap (https://roadmap.kitgenix.com).
+* New: Added a "Request a Feature" banner below the plugin grid on the Kitgenix Hub page, linking to the shared Kitgenix roadmap.
 
 = 2.0.0 (31 August 2026) =
 

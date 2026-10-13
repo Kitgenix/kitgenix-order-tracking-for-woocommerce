@@ -57,7 +57,22 @@ final class Analytics
         add_action('admin_post_kitgenix_order_tracking_export_shipments', [ self::class, 'handle_export_shipments' ]);
         add_action('admin_post_kitgenix_order_tracking_import_shipments', [ self::class, 'handle_import_shipments' ]);
         add_action('admin_post_kitgenix_order_tracking_clear_event_log', [ self::class, 'handle_clear_event_log' ]);
+        add_action('admin_post_kitgenix_order_tracking_save_log_retention', [ self::class, 'handle_save_log_retention' ]);
         add_action('update_option_kitgenix_order_tracking_for_woocommerce_carriers_settings', [ self::class, 'on_carriers_saved' ], 10, 3);
+
+        // Daily housekeeping: prune event log entries past the configured retention period.
+        add_action('admin_init', [ self::class, 'maybe_schedule_log_prune' ]);
+        add_action('kitgenix_order_tracking_prune_event_log', [ Event_Log::class, 'prune' ]);
+    }
+
+    /**
+     * Schedule the daily event log pruning cron event if not already scheduled.
+     */
+    public static function maybe_schedule_log_prune(): void
+    {
+        if ( ! \wp_next_scheduled( 'kitgenix_order_tracking_prune_event_log' ) ) {
+            \wp_schedule_event( time(), 'daily', 'kitgenix_order_tracking_prune_event_log' );
+        }
     }
 
     public static function render_admin_notices(): void
@@ -2385,6 +2400,7 @@ final class Analytics
         echo '<div class="kitgenix-button-group kitgenix-button-group-stack">';
         echo '<a class="button button-secondary" href="' . esc_url( 'https://kitgenix.com/plugins/kitgenix-order-tracking-for-woocommerce/documentation/' ) . '" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Documentation', 'kitgenix-order-tracking-for-woocommerce' ) . '</a>';
         echo '<a class="button button-primary" href="' . esc_url( 'https://kitgenix.com/plugins/kitgenix-order-tracking-for-woocommerce/support' ) . '" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Request Support', 'kitgenix-order-tracking-for-woocommerce' ) . '</a>';
+        echo '<a class="button button-secondary" href="' . esc_url( 'https://roadmap.kitgenix.com/?product=order-tracking-for-woocommerce' ) . '" target="_blank" rel="noopener noreferrer">' . esc_html__( 'Request a Feature', 'kitgenix-order-tracking-for-woocommerce' ) . '</a>';
         echo '</div>';
         echo '</div></div>';
 
@@ -2484,10 +2500,25 @@ final class Analytics
             echo '</div>';
         }
 
+        // phpcs:ignore WordPress.Security.NonceVerification.Recommended
+        if ( isset( $_GET['kitgenix_log_retention_saved'] ) ) {
+            echo '<div class="kitgenix-notice kitgenix-notice-success">';
+            echo '<span class="kitgenix-notice-icon" aria-hidden="true">' . self::icon('coverage') . '</span>';  // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped -- pre-escaped, static trusted SVG markup from self::icon().
+            echo '<div class="kitgenix-notice-body"><p class="kitgenix-notice-text">' . esc_html__( 'Log auto-delete setting saved.', 'kitgenix-order-tracking-for-woocommerce' ) . '</p></div>';
+            echo '</div>';
+        }
+
         $clear_url = \wp_nonce_url(
             admin_url( 'admin-post.php?action=kitgenix_order_tracking_clear_event_log' ),
             'kitgenix_order_tracking_clear_event_log'
         );
+
+        $retention_days     = Event_Log::get_retention_days();
+        $retention_options  = [
+            7  => __( '7 days', 'kitgenix-order-tracking-for-woocommerce' ),
+            14 => __( '14 days', 'kitgenix-order-tracking-for-woocommerce' ),
+            30 => __( '30 days', 'kitgenix-order-tracking-for-woocommerce' ),
+        ];
 
         $log_entries = Event_Log::get_raw_log();
         $table_id    = 'kitgenix-order-tracking-event-log-table';
@@ -2498,6 +2529,17 @@ final class Analytics
         echo '<p class="description">' . esc_html__( 'A record of recent plugin events. Entries show the timestamp, context, outcome, and a plain-English note. IP addresses and sensitive data are never stored here.', 'kitgenix-order-tracking-for-woocommerce' ) . '</p>';
         echo '</div>';
         echo '<div class="kitgenix-card-head-actions">';
+        echo '<form method="post" action="' . esc_url( admin_url( 'admin-post.php' ) ) . '" class="kitgenix-inline-form">';
+        echo '<input type="hidden" name="action" value="kitgenix_order_tracking_save_log_retention" />';
+        wp_nonce_field( 'kitgenix_order_tracking_save_log_retention' );
+        echo '<label for="kitgenix-log-retention-days">' . esc_html__( 'Auto-delete logs after', 'kitgenix-order-tracking-for-woocommerce' ) . '</label>';
+        echo '<select name="kitgenix_log_retention_days" id="kitgenix-log-retention-days" onchange="this.form.submit()">';
+        foreach ( $retention_options as $days_value => $days_label ) {
+            echo '<option value="' . esc_attr( (string) $days_value ) . '" ' . \selected( $retention_days, $days_value, false ) . '>' . esc_html( $days_label ) . '</option>';
+        }
+        echo '</select>';
+        echo '<p class="description">' . esc_html__( 'Log entries older than the selected period are removed automatically.', 'kitgenix-order-tracking-for-woocommerce' ) . '</p>';
+        echo '</form>';
         echo '<a href="' . esc_url( $clear_url ) . '" class="button button-secondary" onclick="return confirm(\'' . esc_js( __( 'Clear all log entries?', 'kitgenix-order-tracking-for-woocommerce' ) ) . '\')">' . esc_html__( 'Clear log', 'kitgenix-order-tracking-for-woocommerce' ) . '</a>';
         echo '</div>';
         echo '</div>'; // card-head
@@ -2599,6 +2641,23 @@ final class Analytics
         \check_admin_referer( 'kitgenix_order_tracking_clear_event_log' );
         Event_Log::clear();
         \wp_safe_redirect( admin_url( 'admin.php?page=' . self::PAGE_SLUG . '&tab=log&kitgenix_log_cleared=1' ) );
+        exit;
+    }
+
+    public static function handle_save_log_retention(): void
+    {
+        if ( ! current_user_can( 'manage_options' ) && ! current_user_can( 'manage_woocommerce' ) ) {
+            \wp_die( esc_html__( 'Permission denied.', 'kitgenix-order-tracking-for-woocommerce' ), 403 );
+        }
+        \check_admin_referer( 'kitgenix_order_tracking_save_log_retention' );
+
+        // phpcs:ignore WordPress.Security.NonceVerification.Missing -- verified via check_admin_referer() above.
+        $days = isset( $_POST['kitgenix_log_retention_days'] ) ? absint( wp_unslash( $_POST['kitgenix_log_retention_days'] ) ) : 0;
+        $days = in_array( $days, [ 7, 14, 30 ], true ) ? $days : 30;
+
+        Event_Log::set_retention_days( $days );
+
+        \wp_safe_redirect( admin_url( 'admin.php?page=' . self::PAGE_SLUG . '&tab=log&kitgenix_log_retention_saved=1' ) );
         exit;
     }
 

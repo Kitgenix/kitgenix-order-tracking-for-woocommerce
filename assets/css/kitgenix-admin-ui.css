@@ -1077,8 +1077,29 @@ html #wpbody-content > .wrap.kitgenix-admin-app,
 .kitgenix-card-head-actions {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 8px;
   flex-shrink: 0;
+}
+
+.kitgenix-inline-form {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 8px;
+}
+
+.kitgenix-inline-form label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--kitgenix-text-color);
+}
+
+.kitgenix-inline-form .description {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: 12px;
+  color: var(--kitgenix-text-muted);
 }
 
 .kitgenix-card-icon {

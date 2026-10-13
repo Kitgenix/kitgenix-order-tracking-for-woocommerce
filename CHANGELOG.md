@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.1.0 – 13 October 2026
+
+- **New:** Added a configurable log auto-delete setting (7/14/30 days) to automatically remove old event log entries.
+- **New:** Added a "Request a Feature" button to the Need Help? sidebar, linking directly to this plugin's page on the Kitgenix roadmap (https://roadmap.kitgenix.com).
+- **New:** Added a "Request a Feature" banner below the plugin grid on the Kitgenix Hub page, linking to the shared Kitgenix roadmap.
+
 ## 2.0.0 – 22 August 2026
 
 - **New:** Redesigned the entire admin experience around the shared Kitgenix design system – a sticky topbar with an Analytics dropdown menu, live settings search, dark/light theme toggle, and mobile hamburger menu replaces the previous page header and tab strip.

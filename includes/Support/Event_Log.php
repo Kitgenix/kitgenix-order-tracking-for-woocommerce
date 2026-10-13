@@ -18,6 +18,10 @@ final class Event_Log {
     private const OPTION_KEY  = 'kitgenix_order_tracking_event_log';
     private const MAX_ENTRIES = 100;
 
+    private const RETENTION_OPTION_KEY   = 'kitgenix_order_tracking_log_retention_days';
+    private const DEFAULT_RETENTION_DAYS = 30;
+    private const ALLOWED_RETENTION_DAYS = [ 7, 14, 30 ];
+
     /**
      * Record an event to the log.
      *
@@ -35,6 +39,8 @@ final class Event_Log {
             'note'    => sanitize_text_field( $note ),
             'code'    => sanitize_text_field( $code ),
         ];
+
+        $log = self::prune_expired( $log );
 
         if ( count( $log ) > self::MAX_ENTRIES ) {
             $log = array_slice( $log, -self::MAX_ENTRIES );
@@ -56,6 +62,57 @@ final class Event_Log {
     /** Delete all stored entries. */
     public static function clear(): void {
         delete_option( self::OPTION_KEY );
+    }
+
+    /**
+     * Remove stored entries older than the configured retention period.
+     *
+     * Shared by the on-write path in record() and the daily cron housekeeping
+     * hook, so both honour the same retention setting.
+     */
+    public static function prune(): void {
+        $log    = self::get_raw_log();
+        $pruned = self::prune_expired( $log );
+
+        if ( count( $pruned ) !== count( $log ) ) {
+            update_option( self::OPTION_KEY, $pruned, false );
+        }
+    }
+
+    /**
+     * Filter out entries older than the configured retention period.
+     *
+     * @param array<int,array<string,mixed>> $log Entries to filter.
+     *
+     * @return array<int,array<string,mixed>>
+     */
+    private static function prune_expired( array $log ): array {
+        $cutoff = time() - ( self::get_retention_days() * DAY_IN_SECONDS );
+
+        return array_values(
+            array_filter(
+                $log,
+                static function ( $entry ) use ( $cutoff ) {
+                    return isset( $entry['time'] ) && (int) $entry['time'] >= $cutoff;
+                }
+            )
+        );
+    }
+
+    /**
+     * Return the configured log retention period in days (7, 14, or 30).
+     */
+    public static function get_retention_days(): int {
+        $days = (int) get_option( self::RETENTION_OPTION_KEY, self::DEFAULT_RETENTION_DAYS );
+        return in_array( $days, self::ALLOWED_RETENTION_DAYS, true ) ? $days : self::DEFAULT_RETENTION_DAYS;
+    }
+
+    /**
+     * Save the log retention period in days, clamped to an allowed value.
+     */
+    public static function set_retention_days( int $days ): void {
+        $days = in_array( $days, self::ALLOWED_RETENTION_DAYS, true ) ? $days : self::DEFAULT_RETENTION_DAYS;
+        update_option( self::RETENTION_OPTION_KEY, $days, false );
     }
 
     /**
