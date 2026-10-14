@@ -5,10 +5,10 @@ Tags: woocommerce, order tracking, shipment tracking, tracking number, shipping
 Requires at least: 6.0
 Tested up to: 7.1
 Requires PHP: 8.1
-Stable tag: 2.1.0
+Stable tag: 2.1.2
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
-PluginScore Verification: pluginscore-verify-3f946ebe63cd6c2183fe1f7f05d768e6
+PluginScore Verification: pluginscore-verify-3228c6da73f00dcd551b970507c983b0
 
 Add WooCommerce shipment tracking, multiple parcels, tracking emails and a self-service customer tracking page.
 
@@ -280,10 +280,18 @@ Built with ❤︎ by @kitgenix - https://kitgenix.com
 
 == Upgrade Notice ==
 
-= 2.1.0 =
-Version 2.1.0 is recommended for all sites.
+= 2.1.2 =
+Version 2.1.2 is recommended for all sites.
 
 == Changelog ==
+
+= 2.1.2 (13 October 2026) =
+
+* Fix: Bump version to 2.1.2 across the plugin.
+
+= 2.1.1 (13 October 2026) =
+
+* Fix: Updated PluginScore Verification code.
 
 = 2.1.0 (13 October 2026) =
 

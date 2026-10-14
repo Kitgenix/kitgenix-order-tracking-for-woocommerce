@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Kitgenix Order Tracking for WooCommerce 2.0.0\n"
+"Project-Id-Version: Kitgenix Order Tracking for WooCommerce 2.1.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/kitgenix-order-tracking-for-woocommerce\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-08-30T16:12:58+00:00\n"
+"POT-Creation-Date: 2026-10-13T09:28:34+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: kitgenix-order-tracking-for-woocommerce\n"
@@ -34,8 +34,8 @@ msgstr ""
 #: kitgenix-order-tracking-for-woocommerce.php
 #: kitgenix-order-tracking-for-woocommerce.php:92
 #: kitgenix-order-tracking-for-woocommerce.php:93
-#: kitgenix-order-tracking-for-woocommerce.php:461
-#: kitgenix-order-tracking-for-woocommerce.php:465
+#: kitgenix-order-tracking-for-woocommerce.php:469
+#: kitgenix-order-tracking-for-woocommerce.php:473
 msgid "Kitgenix"
 msgstr ""
 
@@ -44,259 +44,259 @@ msgstr ""
 msgid "https://kitgenix.com/"
 msgstr ""
 
-#: includes/Admin/Analytics.php:79
+#: includes/Admin/Analytics.php:94
 msgid "Carrier settings saved."
 msgstr ""
 
 #. translators: 1: orders updated, 2: shipments added, 3: rows skipped
-#: includes/Admin/Analytics.php:98
+#: includes/Admin/Analytics.php:113
 #, php-format
 msgid "Bulk shipment import complete. Updated %1$d orders, added %2$d shipments, and skipped %3$d rows."
 msgstr ""
 
-#: includes/Admin/Analytics.php:112
+#: includes/Admin/Analytics.php:127
 msgid "No valid shipment rows were imported. Please check that the CSV contains order_id and tracking_number values."
 msgstr ""
 
-#: includes/Admin/Analytics.php:116
+#: includes/Admin/Analytics.php:131
 msgid "Please upload a CSV file before running the bulk shipment import."
 msgstr ""
 
-#: includes/Admin/Analytics.php:120
+#: includes/Admin/Analytics.php:135
 msgid "The CSV file is missing required headers. Include at least order_id and tracking_number."
 msgstr ""
 
-#: includes/Admin/Analytics.php:124
+#: includes/Admin/Analytics.php:139
 msgid "The bulk shipment import could not be completed. Please verify the CSV format and try again."
 msgstr ""
 
-#: includes/Admin/Analytics.php:143
-#: includes/Admin/Analytics.php:144
+#: includes/Admin/Analytics.php:158
+#: includes/Admin/Analytics.php:159
 msgid "Order Tracking"
 msgstr ""
 
-#: includes/Admin/Analytics.php:207
+#: includes/Admin/Analytics.php:222
 msgid "Remove"
 msgstr ""
 
-#: includes/Admin/Analytics.php:208
-#: includes/Admin/Analytics.php:1826
-#: includes/Admin/Analytics.php:1967
+#: includes/Admin/Analytics.php:223
+#: includes/Admin/Analytics.php:1841
+#: includes/Admin/Analytics.php:1982
 msgid "Upload"
 msgstr ""
 
-#: includes/Admin/Analytics.php:209
+#: includes/Admin/Analytics.php:224
 msgid "Select icon"
 msgstr ""
 
-#: includes/Admin/Analytics.php:210
+#: includes/Admin/Analytics.php:225
 msgid "Use this icon"
 msgstr ""
 
-#: includes/Admin/Analytics.php:211
+#: includes/Admin/Analytics.php:226
 msgid "Delete this custom shipper?"
 msgstr ""
 
-#: includes/Admin/Analytics.php:454
+#: includes/Admin/Analytics.php:469
 msgid "Unknown carrier"
 msgstr ""
 
-#: includes/Admin/Analytics.php:603
+#: includes/Admin/Analytics.php:618
 msgid "Carriers"
 msgstr ""
 
-#: includes/Admin/Analytics.php:604
+#: includes/Admin/Analytics.php:619
 msgid "Bulk Tools"
 msgstr ""
 
-#: includes/Admin/Analytics.php:605
+#: includes/Admin/Analytics.php:620
 msgid "Log"
 msgstr ""
 
-#: includes/Admin/Analytics.php:606
+#: includes/Admin/Analytics.php:621
 msgid "Support"
 msgstr ""
 
-#: includes/Admin/Analytics.php:628
+#: includes/Admin/Analytics.php:643
 #: kitgenix-order-tracking-for-woocommerce.php:398
 msgid "Order Tracking for WooCommerce"
 msgstr ""
 
-#: includes/Admin/Analytics.php:633
+#: includes/Admin/Analytics.php:648
 msgid "Navigation"
 msgstr ""
 
-#: includes/Admin/Analytics.php:637
+#: includes/Admin/Analytics.php:652
 msgid "Analytics"
 msgstr ""
 
-#: includes/Admin/Analytics.php:639
+#: includes/Admin/Analytics.php:654
 msgid "Overview"
 msgstr ""
 
-#: includes/Admin/Analytics.php:639
+#: includes/Admin/Analytics.php:654
 msgid "Key delivery metrics at a glance"
 msgstr ""
 
-#: includes/Admin/Analytics.php:640
+#: includes/Admin/Analytics.php:655
 msgid "Breakdown"
 msgstr ""
 
-#: includes/Admin/Analytics.php:640
+#: includes/Admin/Analytics.php:655
 msgid "Shipments by carrier, status and exception rate"
 msgstr ""
 
-#: includes/Admin/Analytics.php:641
+#: includes/Admin/Analytics.php:656
 msgid "Recent"
 msgstr ""
 
-#: includes/Admin/Analytics.php:641
+#: includes/Admin/Analytics.php:656
 msgid "Latest tracked shipments as they update"
 msgstr ""
 
-#: includes/Admin/Analytics.php:655
-#: includes/Admin/Analytics.php:658
+#: includes/Admin/Analytics.php:670
+#: includes/Admin/Analytics.php:673
 msgid "Search settings"
 msgstr ""
 
-#: includes/Admin/Analytics.php:658
+#: includes/Admin/Analytics.php:673
 msgid "Search settings…"
 msgstr ""
 
-#: includes/Admin/Analytics.php:660
+#: includes/Admin/Analytics.php:675
 msgid "Clear search"
 msgstr ""
 
-#: includes/Admin/Analytics.php:663
+#: includes/Admin/Analytics.php:678
 msgid "Toggle color theme"
 msgstr ""
 
-#: includes/Admin/Analytics.php:667
+#: includes/Admin/Analytics.php:682
 msgid "Kitgenix Hub"
 msgstr ""
 
-#: includes/Admin/Analytics.php:668
+#: includes/Admin/Analytics.php:683
 msgid "Toggle navigation"
 msgstr ""
 
-#: includes/Admin/Analytics.php:695
+#: includes/Admin/Analytics.php:710
 msgid "Bulk shipment export"
 msgstr ""
 
-#: includes/Admin/Analytics.php:696
+#: includes/Admin/Analytics.php:711
 msgid "Download a CSV of every tracked shipment in WooCommerce."
 msgstr ""
 
-#: includes/Admin/Analytics.php:700
+#: includes/Admin/Analytics.php:715
 msgid "The export includes order IDs, tracking numbers, carrier keys, shipment dates, statuses, and any per-item shipment allocations."
 msgstr ""
 
-#: includes/Admin/Analytics.php:701
+#: includes/Admin/Analytics.php:716
 msgid "CSV columns:"
 msgstr ""
 
-#: includes/Admin/Analytics.php:702
+#: includes/Admin/Analytics.php:717
 msgid "Each row represents one shipment. The item_quantities column uses the format item_id:qty|item_id:qty so exported files can be edited and imported again."
 msgstr ""
 
-#: includes/Admin/Analytics.php:706
+#: includes/Admin/Analytics.php:721
 msgid "Export shipments CSV"
 msgstr ""
 
-#: includes/Admin/Analytics.php:717
+#: includes/Admin/Analytics.php:732
 msgid "Bulk shipment import"
 msgstr ""
 
-#: includes/Admin/Analytics.php:718
+#: includes/Admin/Analytics.php:733
 msgid "Add or replace shipment data on multiple orders at once."
 msgstr ""
 
-#: includes/Admin/Analytics.php:722
+#: includes/Admin/Analytics.php:737
 msgid "Designed for spreadsheet-based fulfilment workflows and works best when you start from the plugin’s export file."
 msgstr ""
 
-#: includes/Admin/Analytics.php:724
+#: includes/Admin/Analytics.php:739
 msgid "order_id and tracking_number are required."
 msgstr ""
 
-#: includes/Admin/Analytics.php:725
+#: includes/Admin/Analytics.php:740
 msgid "Use append mode to add new shipments without touching existing ones."
 msgstr ""
 
-#: includes/Admin/Analytics.php:726
+#: includes/Admin/Analytics.php:741
 msgid "Use replace mode to overwrite all shipments on each order included in the CSV."
 msgstr ""
 
-#: includes/Admin/Analytics.php:727
+#: includes/Admin/Analytics.php:742
 msgid "item_quantities is optional and should use item_id:qty|item_id:qty."
 msgstr ""
 
-#: includes/Admin/Analytics.php:736
+#: includes/Admin/Analytics.php:751
 msgid "CSV file"
 msgstr ""
 
-#: includes/Admin/Analytics.php:741
+#: includes/Admin/Analytics.php:756
 msgid "Click to choose a CSV file"
 msgstr ""
 
-#: includes/Admin/Analytics.php:742
+#: includes/Admin/Analytics.php:757
 msgid ".csv files only"
 msgstr ""
 
-#: includes/Admin/Analytics.php:748
+#: includes/Admin/Analytics.php:763
 msgid "Import mode"
 msgstr ""
 
-#: includes/Admin/Analytics.php:749
+#: includes/Admin/Analytics.php:764
 msgid "Append skips tracking numbers already stored on the order. Replace overwrites the matched orders with the shipments present in the CSV."
 msgstr ""
 
-#: includes/Admin/Analytics.php:753
+#: includes/Admin/Analytics.php:768
 msgid "Append new shipments"
 msgstr ""
 
-#: includes/Admin/Analytics.php:754
+#: includes/Admin/Analytics.php:769
 msgid "Replace shipments on matched orders"
 msgstr ""
 
-#: includes/Admin/Analytics.php:760
+#: includes/Admin/Analytics.php:775
 msgid "Import shipments CSV"
 msgstr ""
 
-#: includes/Admin/Analytics.php:772
+#: includes/Admin/Analytics.php:787
 msgid "You do not have permission to export shipment data."
 msgstr ""
 
-#: includes/Admin/Analytics.php:778
+#: includes/Admin/Analytics.php:793
 msgid "The export request could not be verified. Please try again."
 msgstr ""
 
-#: includes/Admin/Analytics.php:784
+#: includes/Admin/Analytics.php:799
 msgid "Unable to open the export stream."
 msgstr ""
 
-#: includes/Admin/Analytics.php:840
+#: includes/Admin/Analytics.php:855
 msgid "You do not have permission to import shipment data."
 msgstr ""
 
-#: includes/Admin/Analytics.php:846
+#: includes/Admin/Analytics.php:861
 msgid "The import request could not be verified. Please try again."
 msgstr ""
 
-#: includes/Admin/Analytics.php:1307
+#: includes/Admin/Analytics.php:1322
 msgid "Date range (days):"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1311
+#: includes/Admin/Analytics.php:1326
 msgid "Apply"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1315
+#: includes/Admin/Analytics.php:1330
 msgid "Quick ranges:"
 msgstr ""
 
 #. translators: %d: number of days in the preset range
-#: includes/Admin/Analytics.php:1327
+#: includes/Admin/Analytics.php:1342
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
@@ -304,489 +304,519 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: 1: days, 2: from date, 3: to date
-#: includes/Admin/Analytics.php:1338
+#: includes/Admin/Analytics.php:1353
 #, php-format
 msgid "Showing last %1$d days (%2$s – %3$s)."
 msgstr ""
 
-#: includes/Admin/Analytics.php:1343
+#: includes/Admin/Analytics.php:1358
 msgid "Refresh"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1359
+#: includes/Admin/Analytics.php:1374
 msgid "Copy plugin link:"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1368
+#: includes/Admin/Analytics.php:1383
 msgid "Support Kitgenix"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1369
+#: includes/Admin/Analytics.php:1384
 msgid "Help us keep building"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1370
+#: includes/Admin/Analytics.php:1385
 msgid "This plugin turns every WooCommerce order into a multi-carrier tracking timeline and a branded self-serve tracking page, so customers check on their parcel instead of emailing you. It is maintained independently and funded entirely by donations from stores that rely on it."
 msgstr ""
 
-#: includes/Admin/Analytics.php:1371
+#: includes/Admin/Analytics.php:1386
 msgid "Donate with PayPal"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1372
+#: includes/Admin/Analytics.php:1387
 msgid "Donations are entirely optional. Kitgenix plugins keep working whether you donate or not."
 msgstr ""
 
-#: includes/Admin/Analytics.php:1376
+#: includes/Admin/Analytics.php:1391
 msgid "Leave a review"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1377
+#: includes/Admin/Analytics.php:1392
 msgid "Read the docs"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1378
+#: includes/Admin/Analytics.php:1393
 msgid "Copy plugin link"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1657
+#: includes/Admin/Analytics.php:1672
 msgid "International carrier packs"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1658
+#: includes/Admin/Analytics.php:1673
 msgid "Apply a regional carrier pack to enable a recommended set of built-in carriers and priorities for that market."
 msgstr ""
 
 #. translators: %s: carrier pack label
-#: includes/Admin/Analytics.php:1668
+#: includes/Admin/Analytics.php:1683
 #, php-format
 msgid "Based on your WooCommerce store country, we recommend the %s pack."
 msgstr ""
 
-#: includes/Admin/Analytics.php:1681
+#: includes/Admin/Analytics.php:1696
 msgid "Carrier pack"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1693
+#: includes/Admin/Analytics.php:1708
 msgid "Apply carrier pack"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1702
+#: includes/Admin/Analytics.php:1717
 msgid "Built-in carriers"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1703
+#: includes/Admin/Analytics.php:1718
 msgid "Enable or disable built-in carriers and set their priority."
 msgstr ""
 
-#: includes/Admin/Analytics.php:1714
-#: includes/Admin/Analytics.php:1802
-#: includes/Admin/Analytics.php:1854
-#: includes/Admin/Analytics.php:1943
+#: includes/Admin/Analytics.php:1729
+#: includes/Admin/Analytics.php:1817
+#: includes/Admin/Analytics.php:1869
+#: includes/Admin/Analytics.php:1958
 msgid "Enabled"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1715
-#: includes/Admin/Analytics.php:1808
-#: includes/Admin/Analytics.php:1855
-#: includes/Admin/Analytics.php:1949
+#: includes/Admin/Analytics.php:1730
+#: includes/Admin/Analytics.php:1823
+#: includes/Admin/Analytics.php:1870
+#: includes/Admin/Analytics.php:1964
 msgid "Priority"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1716
+#: includes/Admin/Analytics.php:1731
 msgid "Shipper"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1717
-#: includes/Admin/Analytics.php:1818
-#: includes/Admin/Analytics.php:1856
-#: includes/Admin/Analytics.php:1959
+#: includes/Admin/Analytics.php:1732
+#: includes/Admin/Analytics.php:1833
+#: includes/Admin/Analytics.php:1871
+#: includes/Admin/Analytics.php:1974
 msgid "Tracking URL pattern"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1765
+#: includes/Admin/Analytics.php:1780
 #: includes/Admin/Order_Meta_Box.php:174
 msgid "Save changes"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1783
+#: includes/Admin/Analytics.php:1798
 msgid "Custom carriers"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1784
+#: includes/Admin/Analytics.php:1799
 msgid "Add your own carriers here. Custom tracking URLs may include the placeholder {tracking_number}."
 msgstr ""
 
-#: includes/Admin/Analytics.php:1792
-#: includes/Admin/Analytics.php:1832
+#: includes/Admin/Analytics.php:1807
+#: includes/Admin/Analytics.php:1847
 msgid "Add shipper"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1813
-#: includes/Admin/Analytics.php:1853
-#: includes/Admin/Analytics.php:1954
+#: includes/Admin/Analytics.php:1828
+#: includes/Admin/Analytics.php:1868
+#: includes/Admin/Analytics.php:1969
 msgid "Name"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1823
-#: includes/Admin/Analytics.php:1964
+#: includes/Admin/Analytics.php:1838
+#: includes/Admin/Analytics.php:1979
 msgid "Icon URL (optional)"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1840
+#: includes/Admin/Analytics.php:1855
 msgid "All custom shippers"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1846
+#: includes/Admin/Analytics.php:1861
 msgid "No custom shippers yet"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1847
+#: includes/Admin/Analytics.php:1862
 msgid "Add your first one on the left."
 msgstr ""
 
-#: includes/Admin/Analytics.php:1857
+#: includes/Admin/Analytics.php:1872
 msgid "Icon"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1858
+#: includes/Admin/Analytics.php:1873
 msgid "Actions"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1878
+#: includes/Admin/Analytics.php:1893
 msgid "Yes"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1879
+#: includes/Admin/Analytics.php:1894
 msgid "No"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1883
+#: includes/Admin/Analytics.php:1898
 msgid "View"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1891
-#: includes/Admin/Analytics.php:1899
+#: includes/Admin/Analytics.php:1906
+#: includes/Admin/Analytics.php:1914
 msgid "Edit"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1900
-#: includes/Admin/Analytics.php:1975
+#: includes/Admin/Analytics.php:1915
+#: includes/Admin/Analytics.php:1990
 msgid "Delete"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1929
+#: includes/Admin/Analytics.php:1944
 msgid "Edit shipper"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1930
+#: includes/Admin/Analytics.php:1945
 #: includes/Admin/Order_Meta_Box.php:488
 msgid "Close"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1976
+#: includes/Admin/Analytics.php:1991
 #: includes/Admin/Order_Meta_Box.php:584
 msgid "Cancel"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1977
+#: includes/Admin/Analytics.php:1992
 msgid "Save Changes"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1996
+#: includes/Admin/Analytics.php:2011
 msgid "Orders in range"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1998
+#: includes/Admin/Analytics.php:2013
 msgid "Total WooCommerce orders created in the selected period."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2003
+#: includes/Admin/Analytics.php:2018
 msgid "Shipment coverage"
 msgstr ""
 
 #. translators: 1: number
-#: includes/Admin/Analytics.php:2007
+#: includes/Admin/Analytics.php:2022
 #, php-format
 msgid "%1$s orders have at least one shipment."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2014
+#: includes/Admin/Analytics.php:2029
 msgid "Avg time to ship"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2015
-#: includes/Admin/Analytics.php:2022
+#: includes/Admin/Analytics.php:2030
+#: includes/Admin/Analytics.php:2037
 msgid "days"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2016
+#: includes/Admin/Analytics.php:2031
 msgid "From order created → earliest shipment date."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2021
+#: includes/Admin/Analytics.php:2036
 msgid "Median time to ship"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2023
+#: includes/Admin/Analytics.php:2038
 msgid "Less affected by outliers than average."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2028
+#: includes/Admin/Analytics.php:2043
 msgid "Shipments in range"
 msgstr ""
 
 #. translators: 1: carrier name
 #. translators: 1: carrier
-#: includes/Admin/Analytics.php:2033
-#: includes/Admin/Analytics.php:2132
+#: includes/Admin/Analytics.php:2048
+#: includes/Admin/Analytics.php:2147
 #, php-format
 msgid "Top carrier: %1$s"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2036
+#: includes/Admin/Analytics.php:2051
 msgid "No shipments found."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2041
+#: includes/Admin/Analytics.php:2056
 msgid "Exception rate"
 msgstr ""
 
 #. translators: 1: number
-#: includes/Admin/Analytics.php:2045
+#: includes/Admin/Analytics.php:2060
 #, php-format
 msgid "%1$s orders have at least one exception shipment."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2052
+#: includes/Admin/Analytics.php:2067
 msgid "Tracking lookups"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2054
+#: includes/Admin/Analytics.php:2069
 msgid "All-time customer tracking page lookups."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2059
+#: includes/Admin/Analytics.php:2074
 msgid "Orders without shipments"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2061
+#: includes/Admin/Analytics.php:2076
 msgid "Helpful for spotting unfulfilled/unstaged workflows."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2071
+#: includes/Admin/Analytics.php:2086
 msgid "Shipments over time"
 msgstr ""
 
 #. translators: 1: number, 2: days
-#: includes/Admin/Analytics.php:2095
+#: includes/Admin/Analytics.php:2110
 #, php-format
 msgid "%1$s shipments recorded across %2$d days."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2104
+#: includes/Admin/Analytics.php:2119
 msgid "Insights"
 msgstr ""
 
 #. translators: 1: percent
-#: includes/Admin/Analytics.php:2113
+#: includes/Admin/Analytics.php:2128
 #, php-format
 msgid "Shipment coverage: %1$s%%"
 msgstr ""
 
 #. translators: 1: percent
-#: includes/Admin/Analytics.php:2119
+#: includes/Admin/Analytics.php:2134
 #, php-format
 msgid "Exception rate: %1$s%%"
 msgstr ""
 
 #. translators: 1: number
-#: includes/Admin/Analytics.php:2125
+#: includes/Admin/Analytics.php:2140
 #, php-format
 msgid "Exceptions (shipments): %1$s"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2146
+#: includes/Admin/Analytics.php:2161
 msgid "View breakdown →"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2203
+#: includes/Admin/Analytics.php:2218
 msgid "Shipments by carrier"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2206
-#: includes/Admin/Analytics.php:2251
+#: includes/Admin/Analytics.php:2221
+#: includes/Admin/Analytics.php:2266
 #: includes/Emails/Email_Hooks.php:244
 msgid "Carrier"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2210
+#: includes/Admin/Analytics.php:2225
 msgid "Shipments by status"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2213
-#: includes/Admin/Analytics.php:2253
+#: includes/Admin/Analytics.php:2228
+#: includes/Admin/Analytics.php:2268
 msgid "Status"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2231
+#: includes/Admin/Analytics.php:2246
 msgid "Recent shipments"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2231
+#: includes/Admin/Analytics.php:2246
 msgid "The most recently recorded shipments in this date range."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2237
+#: includes/Admin/Analytics.php:2252
 msgid "No recent shipments"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2238
+#: includes/Admin/Analytics.php:2253
 msgid "No recent shipments found in this date range."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2249
+#: includes/Admin/Analytics.php:2264
 msgid "Date shipped"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2250
+#: includes/Admin/Analytics.php:2265
 msgid "Order"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2252
+#: includes/Admin/Analytics.php:2267
 #: includes/Admin/Order_Meta_Box.php:504
 #: includes/Frontend/Shortcodes.php:291
 msgid "Tracking number"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2284
+#: includes/Admin/Analytics.php:2299
 #: includes/Frontend/Timeline.php:51
 #: includes/Orders/Shipment.php:39
 msgid "Shipped"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2317
+#: includes/Admin/Analytics.php:2332
 msgid "No shipments found"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2318
+#: includes/Admin/Analytics.php:2333
 msgid "No shipments found in this date range."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2379
+#: includes/Admin/Analytics.php:2394
 msgid "Help and links"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2383
+#: includes/Admin/Analytics.php:2398
 msgid "Need Help?"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2384
+#: includes/Admin/Analytics.php:2399
 msgid "Open the documentation for setup guidance or send us a support request if you need help configuring the plugin."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2386
+#: includes/Admin/Analytics.php:2401
 msgid "Documentation"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2387
+#: includes/Admin/Analytics.php:2402
 msgid "Request Support"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2393
+#: includes/Admin/Analytics.php:2403
+#: kitgenix-order-tracking-for-woocommerce.php:606
+msgid "Request a Feature"
+msgstr ""
+
+#: includes/Admin/Analytics.php:2409
 msgid "Visit Our Official Facebook Group"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2394
+#: includes/Admin/Analytics.php:2410
 msgid "Join the Kitgenix community to ask questions, share feedback, and keep up with product updates."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2396
+#: includes/Admin/Analytics.php:2412
 msgid "Join Group"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2402
+#: includes/Admin/Analytics.php:2418
 msgid "Follow Us"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2403
+#: includes/Admin/Analytics.php:2419
 msgid "Keep up with new releases, tutorials, and product news across our channels."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2483
+#: includes/Admin/Analytics.php:2499
 msgid "Event log cleared."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2497
-msgid "Activity Log"
+#: includes/Admin/Analytics.php:2507
+msgid "Log auto-delete setting saved."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2498
-msgid "A record of recent plugin events. Entries show the timestamp, context, outcome, and a plain-English note. IP addresses and sensitive data are never stored here."
-msgstr ""
-
-#: includes/Admin/Analytics.php:2501
-msgid "Clear all log entries?"
-msgstr ""
-
-#: includes/Admin/Analytics.php:2501
-msgid "Clear log"
-msgstr ""
-
-#: includes/Admin/Analytics.php:2510
-msgid "No events logged yet"
-msgstr ""
-
-#: includes/Admin/Analytics.php:2511
-msgid "Activity will appear here as it happens."
+#: includes/Admin/Analytics.php:2518
+msgid "7 days"
 msgstr ""
 
 #: includes/Admin/Analytics.php:2519
-msgid "Search log…"
+msgid "14 days"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2526
-msgid "Time"
-msgstr ""
-
-#: includes/Admin/Analytics.php:2527
-msgid "Context"
+#: includes/Admin/Analytics.php:2520
+msgid "30 days"
 msgstr ""
 
 #: includes/Admin/Analytics.php:2528
-msgid "Outcome"
+msgid "Activity Log"
 msgstr ""
 
 #: includes/Admin/Analytics.php:2529
+msgid "A record of recent plugin events. Entries show the timestamp, context, outcome, and a plain-English note. IP addresses and sensitive data are never stored here."
+msgstr ""
+
+#: includes/Admin/Analytics.php:2535
+msgid "Auto-delete logs after"
+msgstr ""
+
+#: includes/Admin/Analytics.php:2541
+msgid "Log entries older than the selected period are removed automatically."
+msgstr ""
+
+#: includes/Admin/Analytics.php:2543
+msgid "Clear all log entries?"
+msgstr ""
+
+#: includes/Admin/Analytics.php:2543
+msgid "Clear log"
+msgstr ""
+
+#: includes/Admin/Analytics.php:2552
+msgid "No events logged yet"
+msgstr ""
+
+#: includes/Admin/Analytics.php:2553
+msgid "Activity will appear here as it happens."
+msgstr ""
+
+#: includes/Admin/Analytics.php:2561
+msgid "Search log…"
+msgstr ""
+
+#: includes/Admin/Analytics.php:2568
+msgid "Time"
+msgstr ""
+
+#: includes/Admin/Analytics.php:2569
+msgid "Context"
+msgstr ""
+
+#: includes/Admin/Analytics.php:2570
+msgid "Outcome"
+msgstr ""
+
+#: includes/Admin/Analytics.php:2571
 msgid "Note"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2539
-#: includes/Support/Event_Log.php:83
+#: includes/Admin/Analytics.php:2581
+#: includes/Support/Event_Log.php:140
 msgid "Unknown time"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2564
+#: includes/Admin/Analytics.php:2606
 msgid "No matching log entries"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2572
+#: includes/Admin/Analytics.php:2614
 msgid "Category"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2573
+#: includes/Admin/Analytics.php:2615
 msgid "What it means"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2574
+#: includes/Admin/Analytics.php:2616
 msgid "Action needed?"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2597
+#: includes/Admin/Analytics.php:2639
+#: includes/Admin/Analytics.php:2650
 msgid "Permission denied."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2607
+#: includes/Admin/Analytics.php:2666
 msgid "Carrier settings were saved via the admin settings page."
 msgstr ""
 
@@ -1459,118 +1489,118 @@ msgstr ""
 msgid "Yodel"
 msgstr ""
 
-#: includes/Support/Event_Log.php:67
+#: includes/Support/Event_Log.php:124
 msgid "No recent events recorded yet."
 msgstr ""
 
-#: includes/Support/Event_Log.php:107
+#: includes/Support/Event_Log.php:164
 msgid "Unrecognised"
 msgstr ""
 
-#: includes/Support/Event_Log.php:108
+#: includes/Support/Event_Log.php:165
 msgid "No further detail is available for this event code."
 msgstr ""
 
-#: includes/Support/Event_Log.php:109
-#: includes/Support/Event_Log.php:130
+#: includes/Support/Event_Log.php:166
+#: includes/Support/Event_Log.php:187
 msgid "None."
 msgstr ""
 
-#: includes/Support/Event_Log.php:128
+#: includes/Support/Event_Log.php:185
 msgid "Settings saved"
 msgstr ""
 
-#: includes/Support/Event_Log.php:129
+#: includes/Support/Event_Log.php:186
 msgid "Carrier settings were saved from the admin settings page."
 msgstr ""
 
-#: includes/Support/Event_Log.php:133
-#: includes/Support/Event_Log.php:138
+#: includes/Support/Event_Log.php:190
+#: includes/Support/Event_Log.php:195
 msgid "Import file error"
 msgstr ""
 
-#: includes/Support/Event_Log.php:134
+#: includes/Support/Event_Log.php:191
 msgid "The uploaded CSV file could not be read from the server – usually a broken upload or a file permissions issue."
 msgstr ""
 
-#: includes/Support/Event_Log.php:135
+#: includes/Support/Event_Log.php:192
 msgid "Likely not a system problem. Ask the user to re-upload the file; if it keeps happening, check server file permissions and disk space."
 msgstr ""
 
-#: includes/Support/Event_Log.php:139
+#: includes/Support/Event_Log.php:196
 msgid "The CSV file exists but could not be opened for reading."
 msgstr ""
 
-#: includes/Support/Event_Log.php:140
+#: includes/Support/Event_Log.php:197
 msgid "Likely a corrupted or unusually-encoded file, not a system problem. Ask for a fresh CSV export and try again."
 msgstr ""
 
-#: includes/Support/Event_Log.php:143
-#: includes/Support/Event_Log.php:148
+#: includes/Support/Event_Log.php:200
+#: includes/Support/Event_Log.php:205
 msgid "Malformed CSV"
 msgstr ""
 
-#: includes/Support/Event_Log.php:144
+#: includes/Support/Event_Log.php:201
 msgid "The CSV file has no header row, or the first row was empty."
 msgstr ""
 
-#: includes/Support/Event_Log.php:145
+#: includes/Support/Event_Log.php:202
 msgid "Likely a malformed CSV row, not a system problem. Add a header row (order_id, tracking_number, carrier, …) and re-upload."
 msgstr ""
 
-#: includes/Support/Event_Log.php:149
+#: includes/Support/Event_Log.php:206
 msgid "The CSV header row is missing the required order_id and/or tracking_number columns."
 msgstr ""
 
-#: includes/Support/Event_Log.php:150
+#: includes/Support/Event_Log.php:207
 msgid "Likely a malformed CSV row, not a system problem. Fix the header row to include order_id and tracking_number, then re-upload."
 msgstr ""
 
-#: includes/Support/Event_Log.php:153
+#: includes/Support/Event_Log.php:210
 msgid "Unexpected import error"
 msgstr ""
 
-#: includes/Support/Event_Log.php:154
+#: includes/Support/Event_Log.php:211
 msgid "Something beyond a malformed CSV went wrong while importing shipments – not one of the recognised file or header problems."
 msgstr ""
 
-#: includes/Support/Event_Log.php:155
+#: includes/Support/Event_Log.php:212
 msgid "More concerning than a malformed CSV. Check the site's PHP error log; if it repeats, this may be a real bug worth reporting."
 msgstr ""
 
-#: includes/Support/Event_Log.php:158
+#: includes/Support/Event_Log.php:215
 msgid "Date parse skipped"
 msgstr ""
 
-#: includes/Support/Event_Log.php:159
+#: includes/Support/Event_Log.php:216
 msgid "A shipment's stored date could not be parsed while building analytics charts."
 msgstr ""
 
-#: includes/Support/Event_Log.php:160
+#: includes/Support/Event_Log.php:217
 msgid "None – non-blocking. The shipment is still counted everywhere except date-based charts."
 msgstr ""
 
-#: includes/Support/Event_Log.php:163
+#: includes/Support/Event_Log.php:220
 msgid "Tracking count skipped"
 msgstr ""
 
-#: includes/Support/Event_Log.php:164
+#: includes/Support/Event_Log.php:221
 msgid "Existing tracking numbers could not be counted before a save, so the \"new tracking numbers added\" total was skipped for this save."
 msgstr ""
 
-#: includes/Support/Event_Log.php:165
+#: includes/Support/Event_Log.php:222
 msgid "None – non-blocking, the shipment save itself still succeeded."
 msgstr ""
 
-#: includes/Support/Event_Log.php:168
+#: includes/Support/Event_Log.php:225
 msgid "HPOS lookup fallback"
 msgstr ""
 
-#: includes/Support/Event_Log.php:169
+#: includes/Support/Event_Log.php:226
 msgid "The plugin could not confirm whether High-Performance Order Storage is enabled, so it used the classic order-edit screen instead."
 msgstr ""
 
-#: includes/Support/Event_Log.php:170
+#: includes/Support/Event_Log.php:227
 msgid "None – non-blocking, the order tracking meta box still displays correctly."
 msgstr ""
 
@@ -1642,68 +1672,84 @@ msgstr ""
 msgid "Manage affiliate short links, branded redirects, and click tracking from one WordPress dashboard."
 msgstr ""
 
-#: kitgenix-order-tracking-for-woocommerce.php:466
+#: kitgenix-order-tracking-for-woocommerce.php:446
+msgid "Database Cleaner"
+msgstr ""
+
+#: kitgenix-order-tracking-for-woocommerce.php:450
+msgid "Scan and clean your WordPress database safely, with plugin/theme attribution for every item found and a built-in recycle bin so nothing is ever deleted without a way back."
+msgstr ""
+
+#: kitgenix-order-tracking-for-woocommerce.php:474
 msgid "Install, activate, open, and review Kitgenix plugins."
 msgstr ""
 
 #. translators: %s is the number of active installs and may include a thousands separator, e.g. "1,234". The "+" suffix is literal.
-#: kitgenix-order-tracking-for-woocommerce.php:505
+#: kitgenix-order-tracking-for-woocommerce.php:513
 #, php-format
 msgid "%s+ installs"
 msgstr ""
 
 #. translators: %s is the average rating out of 5 with one decimal place, e.g. "4.5". The star symbol (★) precedes the number.
-#: kitgenix-order-tracking-for-woocommerce.php:514
+#: kitgenix-order-tracking-for-woocommerce.php:522
 #, php-format
 msgid "★ %s/5"
 msgstr ""
 
-#: kitgenix-order-tracking-for-woocommerce.php:519
+#: kitgenix-order-tracking-for-woocommerce.php:527
 msgid "Not installed"
 msgstr ""
 
-#: kitgenix-order-tracking-for-woocommerce.php:521
+#: kitgenix-order-tracking-for-woocommerce.php:529
 msgid "Active"
 msgstr ""
 
-#: kitgenix-order-tracking-for-woocommerce.php:523
+#: kitgenix-order-tracking-for-woocommerce.php:531
 msgid "Installed (Inactive)"
 msgstr ""
 
-#: kitgenix-order-tracking-for-woocommerce.php:539
-#: kitgenix-order-tracking-for-woocommerce.php:541
+#: kitgenix-order-tracking-for-woocommerce.php:547
+#: kitgenix-order-tracking-for-woocommerce.php:549
 msgid "Install"
 msgstr ""
 
-#: kitgenix-order-tracking-for-woocommerce.php:549
+#: kitgenix-order-tracking-for-woocommerce.php:557
 msgid "Activate"
 msgstr ""
 
-#: kitgenix-order-tracking-for-woocommerce.php:551
+#: kitgenix-order-tracking-for-woocommerce.php:559
 msgid "You do not have permission to activate plugins."
 msgstr ""
 
-#: kitgenix-order-tracking-for-woocommerce.php:556
+#: kitgenix-order-tracking-for-woocommerce.php:564
 msgid "Open"
 msgstr ""
 
-#: kitgenix-order-tracking-for-woocommerce.php:561
+#: kitgenix-order-tracking-for-woocommerce.php:569
 msgid "Details"
 msgstr ""
 
-#: kitgenix-order-tracking-for-woocommerce.php:565
+#: kitgenix-order-tracking-for-woocommerce.php:573
 msgid "Review"
 msgstr ""
 
-#: kitgenix-order-tracking-for-woocommerce.php:566
+#: kitgenix-order-tracking-for-woocommerce.php:574
 msgid "Support Forum"
 msgstr ""
 
-#: kitgenix-order-tracking-for-woocommerce.php:648
+#: kitgenix-order-tracking-for-woocommerce.php:603
+msgid "Have an idea for a new feature?"
+msgstr ""
+
+#: kitgenix-order-tracking-for-woocommerce.php:604
+msgid "Browse the roadmap, vote on ideas, and submit feature requests for any Kitgenix plugin."
+msgstr ""
+
+#: kitgenix-order-tracking-for-woocommerce.php:666
 msgid "Kitgenix Order Tracking for WooCommerce requires WooCommerce to be installed and active. The plugin has been deactivated."
 msgstr ""
 
-#: kitgenix-order-tracking-for-woocommerce.php:683
+#: kitgenix-order-tracking-for-woocommerce.php:702
 msgid "Settings"
 msgstr ""
 
