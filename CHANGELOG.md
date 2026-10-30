@@ -1,5 +1,31 @@
 # Changelog
 
+## 2.2.0 – 30 October 2026
+
+- **Fix:** The order number and email lookup now works for stores using a sequential or custom order-number plugin (for example WebToffee/Skyverge Sequential Order Numbers, Algoritmika Custom Order Numbers, or Kitgenix MultiStore Sync's own network order numbers). The lookup previously called `wc_get_order()` directly on the submitted number, which only accepts the order's internal ID, so a customer entering the order number actually shown to them could never find their order. The submitted number is now resolved the same way WooCommerce's own order-tracking shortcode does, through the `woocommerce_shortcode_order_tracking_order_id` filter, with a fallback to a short list of known order-number meta keys (filterable via `kitgenix_order_tracking_for_woocommerce_order_number_meta_keys`) before falling back to the raw internal ID.
+- **New:** Branded My Account Tracking Panel. Display shipments and status details directly within WooCommerce My Account order views. Each shipment shows its carrier, a status badge, the tracking number, a shipment timeline, the items it contains and a "Track with carrier" button. The panel can be turned off with the `kitgenix_order_tracking_for_woocommerce_show_my_account_panel` filter, and its accent colour changed with the `kitgenix_order_tracking_for_woocommerce_my_account_accent_color` filter.
+- **Improved:** The My Account shipment timeline no longer shows a permanently greyed-out "In transit" step for shipments staff never manually advance. Any shipment that hasn't reached a final status (delivered, exception, returned or cancelled) now ends in a single open "On its way"/"In transit" step with a subtle pulsing indicator, so it reads as active progress instead of a stalled tracker. The "Track with carrier" button is also more prominent, since the carrier's own site remains the source of live scan updates.
+- **Security:** Fixed an issue where, for an order with no postcode stored, a lookup using only a tracking number could show the order's full billing and shipping addresses. These details are now only shown after an order number and billing email lookup, or once the postcode is confirmed.
+- **Security:** Added rate limiting to the tracking form. Failed lookups are limited per IP address (20 every 15 minutes), and an individual order is temporarily locked after 5 incorrect email or postcode attempts, so the postcode check cannot be brute-forced. Both limits can be changed with the `kitgenix_order_tracking_for_woocommerce_max_failed_lookups_per_ip` and `kitgenix_order_tracking_for_woocommerce_max_failed_lookups_per_order` filters.
+- **Security:** The tracking form now shows the same message when an order does not exist and when the email does not match, so it can no longer be used to discover which order numbers exist.
+- **Security:** Shipment CSV exports now neutralise spreadsheet formula injection by prefixing values that start with `=`, `+`, `-`, `@`, a tab or a carriage return with an apostrophe. Shipment CSV imports remove it again automatically, so exported files import back unchanged.
+- **Improved:** Raised the minimum PHP version to 8.2 (`Requires PHP: 8.2`).
+- **Improved:** Tested up to WordPress 7.4 and WooCommerce 11.2.1, and reviewed for compatibility with PHP 8.2 to 8.5. The full codebase passes syntax checks on PHP 8.5 and a PHPCompatibility scan for PHP 8.2–8.5, and uses no dynamic properties or functions deprecated in PHP 8.2–8.5.
+- **Improved:** Declared compatibility with the WooCommerce Cart and Checkout blocks (`cart_checkout_blocks`), so WooCommerce no longer lists the plugin as possibly incompatible in the Checkout block editor.
+- **Fix:** The CSV `$escape` argument is now passed explicitly in the shipment CSV export and bulk tracking CSV import, preventing "the $escape parameter must be provided" deprecation notices on PHP 8.4 and later. The CSV format is unchanged.
+- **Dev:** Removed the PluginScore verification code from the readme, as Kitgenix Plugin Score has been discontinued.
+- **Dev:** Bumped the version to 2.2.0 across the plugin.
+- **Documentation:** Regenerated the `.pot` translation template for 2.2.0.
+- **Documentation:** The readme changelog now lists only the current release. The full release history is in `CHANGELOG.md`.
+
+## 2.1.2 – 13 October 2026
+
+- **Fix:** Bump version to 2.1.2 across the plugin.
+
+## 2.1.1 – 13 October 2026
+
+- **Fix:** Updated PluginScore Verification code.
+
 ## 2.1.0 – 13 October 2026
 
 - **New:** Added a configurable log auto-delete setting (7/14/30 days) to automatically remove old event log entries.

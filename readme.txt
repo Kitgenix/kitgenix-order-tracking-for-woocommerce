@@ -3,12 +3,11 @@ Contributors: kitgenix
 Donate link: https://www.paypal.com/donate/?hosted_button_id=KALF36K6JJ9B2
 Tags: woocommerce, order tracking, shipment tracking, tracking number, shipping
 Requires at least: 6.0
-Tested up to: 7.1
-Requires PHP: 8.1
-Stable tag: 2.1.2
+Tested up to: 7.4
+Requires PHP: 8.2
+Stable tag: 2.2.0
 License: GPLv3 or later
 License URI: https://www.gnu.org/licenses/gpl-3.0.html
-PluginScore Verification: pluginscore-verify-3228c6da73f00dcd551b970507c983b0
 
 Add WooCommerce shipment tracking, multiple parcels, tracking emails and a self-service customer tracking page.
 
@@ -170,7 +169,10 @@ The plugin adds a custom order status, "Partially shipped", and a matching custo
 Yes. The `[kitgenix_tracking_form]` tracking page is public and supports lookup by order number and billing email, or by tracking number alone.
 
 = Why can't a customer see the full address or item details on the tracking page? =
-For privacy, full addresses, the route map, and item-level shipment detail are only shown after the customer confirms the postcode, ZIP code, or postal code stored on the order. This check uses country-aware matching, not a single fixed postcode format.
+For privacy, full addresses, the route map, and item-level shipment detail are only shown after the customer confirms the postcode, ZIP code, or postal code stored on the order. This check uses country-aware matching, not a single fixed postcode format. If an order has no postcode stored, these details are only shown for an order number and billing email lookup, never for a tracking-number-only lookup.
+
+= Can someone guess order numbers, emails or postcodes on the tracking page? =
+No. The form shows the same message whether an order doesn't exist or the email doesn't match, so it can't be used to find valid order numbers. Failed lookups are also rate-limited: 20 per IP address every 15 minutes, and an individual order is locked for 15 minutes after 5 wrong email or postcode attempts. Developers can change these limits with the `kitgenix_order_tracking_for_woocommerce_max_failed_lookups_per_ip` and `kitgenix_order_tracking_for_woocommerce_max_failed_lookups_per_order` filters.
 
 = Does the plugin work with WooCommerce High-Performance Order Storage (HPOS)? =
 Yes. The plugin declares HPOS compatibility and its order meta box and save logic work on both the classic and HPOS order-edit screens.
@@ -280,41 +282,27 @@ Built with ❤︎ by @kitgenix - https://kitgenix.com
 
 == Upgrade Notice ==
 
-= 2.1.2 =
-Version 2.1.2 is recommended for all sites.
+= 2.2.0 =
+Adds a branded tracking panel to My Account order views. Security release: adds rate limiting to the tracking form and fixes customer addresses being shown for some tracking-number lookups. Recommended for all sites.
 
 == Changelog ==
 
-= 2.1.2 (13 October 2026) =
+= 2.2.0 (30 October 2026) =
 
-* Fix: Bump version to 2.1.2 across the plugin.
+* Fix: The order number and email lookup now works for stores using a sequential or custom order-number plugin (for example WebToffee/Skyverge Sequential Order Numbers, Algoritmika Custom Order Numbers, or Kitgenix MultiStore Sync's own network order numbers). The lookup previously called `wc_get_order()` directly on the submitted number, which only accepts the order's internal ID, so a customer entering the order number actually shown to them could never find their order. The submitted number is now resolved the same way WooCommerce's own order-tracking shortcode does, through the `woocommerce_shortcode_order_tracking_order_id` filter, with a fallback to a short list of known order-number meta keys (filterable via `kitgenix_order_tracking_for_woocommerce_order_number_meta_keys`) before falling back to the raw internal ID.
+* New: Branded My Account Tracking Panel. Display shipments and status details directly within WooCommerce My Account order views. Each shipment shows its carrier, a status badge, the tracking number, a shipment timeline, the items it contains and a "Track with carrier" button. The panel can be turned off with the `kitgenix_order_tracking_for_woocommerce_show_my_account_panel` filter, and its accent colour changed with the `kitgenix_order_tracking_for_woocommerce_my_account_accent_color` filter.
+* Improved: The My Account shipment timeline no longer shows a permanently greyed-out "In transit" step for shipments staff never manually advance. Any shipment that hasn't reached a final status (delivered, exception, returned or cancelled) now ends in a single open "On its way"/"In transit" step with a subtle pulsing indicator, so it reads as active progress instead of a stalled tracker. The "Track with carrier" button is also more prominent, since the carrier's own site remains the source of live scan updates.
+* Security: Fixed an issue where, for an order with no postcode stored, a lookup using only a tracking number could show the order's full billing and shipping addresses. These details are now only shown after an order number and billing email lookup, or once the postcode is confirmed.
+* Security: Added rate limiting to the tracking form. Failed lookups are limited per IP address (20 every 15 minutes), and an individual order is temporarily locked after 5 incorrect email or postcode attempts, so the postcode check cannot be brute-forced. Both limits can be changed with the `kitgenix_order_tracking_for_woocommerce_max_failed_lookups_per_ip` and `kitgenix_order_tracking_for_woocommerce_max_failed_lookups_per_order` filters.
+* Security: The tracking form now shows the same message when an order does not exist and when the email does not match, so it can no longer be used to discover which order numbers exist.
+* Security: Shipment CSV exports now neutralise spreadsheet formula injection by prefixing values that start with `=`, `+`, `-`, `@`, a tab or a carriage return with an apostrophe. Shipment CSV imports remove it again automatically, so exported files import back unchanged.
+* Improved: Raised the minimum PHP version to 8.2 (`Requires PHP: 8.2`).
+* Improved: Tested up to WordPress 7.4 and WooCommerce 11.2.1, and reviewed for compatibility with PHP 8.2 to 8.5. The full codebase passes syntax checks on PHP 8.5 and a PHPCompatibility scan for PHP 8.2–8.5, and uses no dynamic properties or functions deprecated in PHP 8.2–8.5.
+* Improved: Declared compatibility with the WooCommerce Cart and Checkout blocks (`cart_checkout_blocks`), so WooCommerce no longer lists the plugin as possibly incompatible in the Checkout block editor.
+* Fix: The CSV `$escape` argument is now passed explicitly in the shipment CSV export and bulk tracking CSV import, preventing "the $escape parameter must be provided" deprecation notices on PHP 8.4 and later. The CSV format is unchanged.
+* Dev: Removed the PluginScore verification code from the readme, as Kitgenix Plugin Score has been discontinued.
+* Dev: Bumped the version to 2.2.0 across the plugin.
+* Documentation: Regenerated the `.pot` translation template for 2.2.0.
+* Documentation: The readme changelog now lists only the current release. The full release history is in `CHANGELOG.md`.
 
-= 2.1.1 (13 October 2026) =
-
-* Fix: Updated PluginScore Verification code.
-
-= 2.1.0 (13 October 2026) =
-
-* New: Added a configurable log auto-delete setting (7/14/30 days) to automatically remove old event log entries.
-* New: Added a "Request a Feature" button to the Need Help? sidebar, linking directly to this plugin's page on the Kitgenix roadmap (https://roadmap.kitgenix.com).
-* New: Added a "Request a Feature" banner below the plugin grid on the Kitgenix Hub page, linking to the shared Kitgenix roadmap.
-
-= 2.0.0 (31 August 2026) =
-
-* New: Redesigned the entire admin experience around the shared Kitgenix design system – a sticky topbar with an Analytics dropdown menu, live settings search, dark/light theme toggle, and mobile hamburger menu replaces the previous page header and tab strip.
-* New: Added a redesigned central Kitgenix Hub page for discovering, installing, activating, and reviewing every Kitgenix plugin from one screen, including the new Image Optimizer plugin.
-* Improved: Rebuilt the Analytics, Carriers, Bulk Tools, Support, and Log tabs around a consistent set of cards, toggle switches, colour-coded status badges, empty states, and a drag-and-drop CSV upload zone, replacing the previous form tables and plain links.
-* Improved: The Tracking Analytics stat-tile grid – including orders in range, time-to-ship, lookups, and other metrics – now uses a fixed four-column layout on wider screens, with responsive fallbacks to two columns and then one column on smaller displays.
-* Improved: The "Add tracking" modal on the WooCommerce order edit screen and the custom carrier edit modal now share a common accessible modal component with proper focus handling, Escape-to-close support, and accessible labelling.
-* Improved: Custom carrier rows now use compact icon-only edit and delete action buttons with colour-coded enabled/disabled badges instead of plain text links.
-* Improved: The Log tab now displays entries in a searchable, paginated table containing time, context, outcome, and a plain-English note instead of a plain text block.
-* Improved: CSV bulk import failures now record the specific underlying reason – including unreadable files, files that cannot be opened, missing or invalid headers, and unexpected processing errors – in the Log tab alongside the existing on-screen message.
-* Improved: Added a reference table to the Log tab explaining what each recorded category means and whether administrator action is required.
-* Improved: The Support tab is now three focused cards – a donate card with a collapsible monthly-amount picker, a "what your support funds" summary, and a "get involved" panel for reviews and plugin links – replacing the previous stack of donate, trust, and community cards.
-* Improved: Moved the Log tab directly before Support in the admin navigation for a more logical workflow.
-* Improved: Refreshed the Kitgenix logo and favicon assets used throughout the admin menu icon, Kitgenix Hub header, and Analytics header.
-* Fix: The "Follow Us" social links no longer appear twice on the Support tab, removing the previous duplication between the inline social block and sidebar.
-* Fix: The "Shipments over time" sparkline no longer displays a bold solid line when there is no shipment data. Empty charts now render a thinner, muted baseline so the absence of data cannot be mistaken for a genuine flat trend.
-* Fix: Number inputs across the Analytics and settings screens are no longer cramped to a fixed 50px width.
-* Dev: Added a shared `kitgenix-admin-components.js` controller providing modal open/close handling, toast notifications, collapsible cards, copy-to-clipboard controls, and live table search. Both `admin-analytics.js` and `admin-order-tracking.js` now use the shared component controller.
-* Dev: Three previously silent internal errors – Analytics date parsing, tracking-count lookups, and HPOS order-screen detection – are now recorded in the Log tab for easier diagnostics while remaining non-blocking and preserving existing behaviour.
+Full release history is available in the plugin's `CHANGELOG.md` file.

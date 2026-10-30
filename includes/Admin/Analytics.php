@@ -799,6 +799,8 @@ final class Analytics
             wp_die( esc_html__( 'Unable to open the export stream.', 'kitgenix-order-tracking-for-woocommerce' ) );
         }
 
+        $handle->setCsvControl( ',', '"', '\\' );
+
         nocache_headers();
         header( 'Content-Type: text/csv; charset=utf-8' );
         header( 'Content-Disposition: attachment; filename=' . self::get_bulk_export_filename() );
@@ -830,18 +832,21 @@ final class Analytics
                 $carrier = isset( $shipment['carrier'] ) ? (string) $shipment['carrier'] : '';
 
                 $handle->fputcsv(
-                    [
-                        (string) $order->get_id(),
-                        (string) $order->get_order_number(),
-                        isset( $shipment['id'] ) ? (string) $shipment['id'] : '',
-                        $carrier,
-                        $carrier !== '' ? Carriers::get_label( $carrier ) : '',
-                        isset( $shipment['tracking_number'] ) ? (string) $shipment['tracking_number'] : '',
-                        isset( $shipment['tracking_url'] ) ? (string) $shipment['tracking_url'] : '',
-                        isset( $shipment['created_at'] ) ? (string) $shipment['created_at'] : '',
-                        isset( $shipment['status'] ) ? (string) $shipment['status'] : 'shipped',
-                        self::format_bulk_item_quantities( isset( $shipment['items'] ) && is_array( $shipment['items'] ) ? $shipment['items'] : [] ),
-                    ]
+                    array_map(
+                        [ self::class, 'csv_escape_formula' ],
+                        [
+                            (string) $order->get_id(),
+                            (string) $order->get_order_number(),
+                            isset( $shipment['id'] ) ? (string) $shipment['id'] : '',
+                            $carrier,
+                            $carrier !== '' ? Carriers::get_label( $carrier ) : '',
+                            isset( $shipment['tracking_number'] ) ? (string) $shipment['tracking_number'] : '',
+                            isset( $shipment['tracking_url'] ) ? (string) $shipment['tracking_url'] : '',
+                            isset( $shipment['created_at'] ) ? (string) $shipment['created_at'] : '',
+                            isset( $shipment['status'] ) ? (string) $shipment['status'] : 'shipped',
+                            self::format_bulk_item_quantities( isset( $shipment['items'] ) && is_array( $shipment['items'] ) ? $shipment['items'] : [] ),
+                        ]
+                    )
                 );
             }
         }
@@ -929,7 +934,7 @@ final class Analytics
             throw new \RuntimeException( 'file_open_failed' );
         }
 
-        $handle->setCsvControl( $delimiter );
+        $handle->setCsvControl( $delimiter, '"', '\\' );
         $handle->setFlags( \SplFileObject::READ_CSV | \SplFileObject::SKIP_EMPTY );
 
         $header_row = $handle->fgetcsv();
@@ -1102,10 +1107,40 @@ final class Analytics
         $record = [];
 
         foreach ( $headers as $index => $header ) {
-            $record[ $header ] = isset( $values[ $index ] ) ? trim( (string) $values[ $index ] ) : '';
+            $value             = isset( $values[ $index ] ) ? trim( (string) $values[ $index ] ) : '';
+            $record[ $header ] = self::csv_unescape_formula( $value );
         }
 
         return $record;
+    }
+
+    /**
+     * Prefixes a value that a spreadsheet application would interpret as a
+     * formula (or that some Excel versions treat as a DDE/clipboard trigger)
+     * with an apostrophe, so an exported CSV is safe to open directly.
+     */
+    private static function csv_escape_formula( string $value ): string
+    {
+        if ( '' === $value || ! in_array( $value[0], [ '=', '+', '-', '@', "\t", "\r" ], true ) ) {
+            return $value;
+        }
+
+        return "'" . $value;
+    }
+
+    /** Reverses csv_escape_formula() on import, so a round-tripped export imports back unchanged. */
+    private static function csv_unescape_formula( string $value ): string
+    {
+        if ( '' === $value || "'" !== $value[0] ) {
+            return $value;
+        }
+
+        $rest = substr( $value, 1 );
+        if ( '' !== $rest && in_array( $rest[0], [ '=', '+', '-', '@', "\t", "\r" ], true ) ) {
+            return $rest;
+        }
+
+        return $value;
     }
 
     /**

@@ -158,3 +158,125 @@
   .kitgenix-results-grid { grid-template-columns: 1fr; }
   .kitgenix-details-grid { grid-template-columns: 1fr; }
 }
+
+/* ===================== My Account tracking panel ===================== */
+.kitgenix-account-tracking {
+    --kitgenix-ot-accent: #214BFF;
+    background: #ffffff;
+    border: 1px solid #e5e5e5;
+    border-top: 4px solid var(--kitgenix-ot-accent);
+    border-radius: 6px;
+    padding: 18px 20px;
+    margin: 24px 0;
+    font-size: 14px;
+}
+.kitgenix-account-tracking-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 4px; }
+.kitgenix-account-tracking-title { margin: 0; font-size: 18px; }
+.kitgenix-account-tracking-count { margin: 0 0 12px; color: #6c737c; }
+.kitgenix-account-shipments { list-style: none; padding: 0; margin: 0; }
+.kitgenix-account-shipment { padding: 14px 0; border-top: 1px solid #ececec; }
+.kitgenix-account-shipment:first-child { border-top: none; padding-top: 4px; }
+.kitgenix-account-shipment-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
+.kitgenix-account-shipment-head .kitgenix-tracking-header { margin-bottom: 0; }
+.kitgenix-account-label { font-weight: 500; margin-right: 4px; }
+.kitgenix-account-tracking .kitgenix-tracking-number code { background: #f6f7f7; padding: 2px 6px; border-radius: 3px; word-break: break-all; }
+.kitgenix-account-shipment-note { margin: 8px 0; padding: 8px 10px; background: #f6f7f7; border-radius: 4px; color: #2c3338; }
+.kitgenix-account-tracking .kitgenix-shipment-items { margin-top: 8px; }
+.kitgenix-account-shipment-actions { margin: 12px 0 0; }
+.kitgenix-account-tracking .kitgenix-account-track-button {
+    background: var(--kitgenix-ot-accent);
+    border-color: var(--kitgenix-ot-accent);
+    color: #ffffff;
+    font-weight: 600;
+    transition: filter 0.15s ease, transform 0.15s ease;
+}
+.kitgenix-account-tracking .kitgenix-account-track-button::after {
+    content: "\2197";
+    margin-left: 6px;
+    display: inline-block;
+}
+.kitgenix-account-tracking .kitgenix-account-track-button:hover,
+.kitgenix-account-tracking .kitgenix-account-track-button:focus {
+    filter: brightness(0.9);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+/* Status badges */
+.kitgenix-status-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 600;
+    line-height: 1.6;
+    background: #eef0f2;
+    color: #2c3338;
+}
+.kitgenix-status-badge--order { background: var(--kitgenix-ot-accent); color: #ffffff; }
+.kitgenix-status-badge--shipped,
+.kitgenix-status-badge--in_transit { background: #e8f0fe; color: #1a4fb4; }
+.kitgenix-status-badge--delivered { background: #e6f4ea; color: #1e7b34; }
+.kitgenix-status-badge--exception,
+.kitgenix-status-badge--returned { background: #fff4e5; color: #8a5300; }
+.kitgenix-status-badge--cancelled { background: #fbeaea; color: #a42834; }
+
+/* Shipment timeline */
+.kitgenix-timeline { list-style: none; display: flex; padding: 0; margin: 12px 0 8px; }
+.kitgenix-timeline-step { position: relative; flex: 1 1 0; text-align: center; padding-top: 22px; font-size: 12px; color: #6c737c; }
+.kitgenix-timeline-step::before {
+    content: "";
+    position: absolute;
+    top: 7px;
+    left: -50%;
+    width: 100%;
+    height: 2px;
+    background: #dcdcde;
+}
+.kitgenix-timeline-step:first-child::before { display: none; }
+.kitgenix-timeline-dot {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    width: 16px;
+    height: 16px;
+    margin-left: -8px;
+    border-radius: 50%;
+    background: #ffffff;
+    border: 2px solid #dcdcde;
+    box-sizing: border-box;
+    z-index: 1;
+}
+.kitgenix-timeline-step.is-reached { color: #2c3338; }
+.kitgenix-timeline-step.is-reached::before { background: var(--kitgenix-ot-accent, #214BFF); }
+.kitgenix-timeline-step.is-reached .kitgenix-timeline-dot { background: var(--kitgenix-ot-accent, #214BFF); border-color: var(--kitgenix-ot-accent, #214BFF); }
+.kitgenix-timeline-step.is-warning .kitgenix-timeline-dot { background: #dba617; border-color: #dba617; }
+.kitgenix-timeline-label { display: block; font-weight: 600; }
+.kitgenix-timeline-date { display: block; margin-top: 2px; }
+.kitgenix-timeline-estimate { margin: 4px 0 0; color: #6c737c; font-size: 12px; }
+
+/* "Still in progress" step: reads as live/active rather than a stalled,
+   permanently-pending node, without implying any specific automated status. */
+.kitgenix-timeline-step.is-current .kitgenix-timeline-label { color: var(--kitgenix-ot-accent, #214BFF); }
+.kitgenix-timeline-step.is-current .kitgenix-timeline-dot { color: var(--kitgenix-ot-accent, #214BFF); overflow: visible; }
+.kitgenix-timeline-pulse {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: currentColor;
+    opacity: 0.6;
+    animation: kitgenix-timeline-pulse 1.8s ease-out infinite;
+}
+@keyframes kitgenix-timeline-pulse {
+    0%   { transform: scale(1); opacity: 0.6; }
+    100% { transform: scale(2.2); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) {
+    .kitgenix-timeline-pulse { animation: none; opacity: 0.35; }
+}
+@media (max-width: 600px) {
+  .kitgenix-timeline { flex-direction: column; gap: 10px; }
+  .kitgenix-timeline-step { text-align: left; padding: 0 0 0 26px; }
+  .kitgenix-timeline-step::before { top: -10px; left: 7px; width: 2px; height: 10px; }
+  .kitgenix-timeline-dot { left: 0; margin-left: 0; }
+}

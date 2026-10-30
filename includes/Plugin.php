@@ -13,6 +13,7 @@ defined('ABSPATH') || exit;
 
 use Kitgenix\OrderTracking\Admin\Admin;
 use Kitgenix\OrderTracking\Frontend\Shortcodes;
+use Kitgenix\OrderTracking\Frontend\My_Account;
 use Kitgenix\OrderTracking\Emails\Email_Hooks;
 use Kitgenix\OrderTracking\Emails\Email_Partially_Shipped;
 use Kitgenix\OrderTracking\Orders\Order_Tracking;
@@ -47,6 +48,7 @@ final class Plugin {
 
         // Frontend.
         Shortcodes::init();
+        My_Account::init();
 
         // Email hooks.
         Email_Hooks::init();

@@ -96,11 +96,11 @@ final class Order_Meta_Box {
 		}
 
 		$admin_js_path = trailingslashit( KITGENIX_ORDER_TRACKING_FOR_WOOCOMMERCE_PLUGIN_DIR ) . 'assets/js/admin-order-tracking.js';
-		$admin_js_ver  = file_exists( $admin_js_path ) ? (string) filemtime( $admin_js_path ) : '1.2.0';
+		$admin_js_ver  = file_exists( $admin_js_path ) ? (string) filemtime( $admin_js_path ) : ( defined( 'KITGENIX_ORDER_TRACKING_FOR_WOOCOMMERCE_VERSION' ) ? (string) KITGENIX_ORDER_TRACKING_FOR_WOOCOMMERCE_VERSION : '2.2.0' );
 
 		// Enqueue admin CSS for modal and meta box UI.
 		$admin_css_path = trailingslashit( KITGENIX_ORDER_TRACKING_FOR_WOOCOMMERCE_PLUGIN_DIR ) . 'assets/css/admin.css';
-		$admin_css_ver  = file_exists( $admin_css_path ) ? (string) filemtime( $admin_css_path ) : ( defined( 'KITGENIX_ORDER_TRACKING_FOR_WOOCOMMERCE_VERSION' ) ? (string) KITGENIX_ORDER_TRACKING_FOR_WOOCOMMERCE_VERSION : '1.0.5' );
+		$admin_css_ver  = file_exists( $admin_css_path ) ? (string) filemtime( $admin_css_path ) : ( defined( 'KITGENIX_ORDER_TRACKING_FOR_WOOCOMMERCE_VERSION' ) ? (string) KITGENIX_ORDER_TRACKING_FOR_WOOCOMMERCE_VERSION : '2.2.0' );
 
 		wp_enqueue_style( 'kitgenix-order-tracking-for-woocommerce-admin-ui' );
 

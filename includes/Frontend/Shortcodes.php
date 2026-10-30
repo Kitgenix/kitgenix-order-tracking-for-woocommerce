@@ -38,6 +38,16 @@ final class Shortcodes {
 	 */
 	private const DEFAULT_MAP_ZOOM = 5;
 
+	/** Failed-lookup throttle, per remote IP: how many failures within the window trigger a lockout. */
+	private const MAX_FAILED_LOOKUPS_PER_IP = 20;
+	private const IP_FAILURE_WINDOW         = 15 * MINUTE_IN_SECONDS;
+	private const IP_LOCKOUT_DURATION       = 15 * MINUTE_IN_SECONDS;
+
+	/** Failed-lookup throttle, per order: how many wrong email/postcode attempts against the same order trigger a lockout. */
+	private const MAX_FAILED_LOOKUPS_PER_ORDER = 5;
+	private const ORDER_FAILURE_WINDOW         = DAY_IN_SECONDS;
+	private const ORDER_LOCKOUT_DURATION       = 15 * MINUTE_IN_SECONDS;
+
 	/**
 	 * Register shortcodes.
 	 *
@@ -63,6 +73,78 @@ final class Shortcodes {
 	}
 
 	/**
+	 * Resolve a submitted order number to a WC_Order.
+	 *
+	 * wc_get_order() only accepts the *internal* order ID. Stores using a
+	 * sequential or custom order-number display plugin (WebToffee/Skyverge
+	 * Sequential Order Numbers, Algoritmika Custom Order Numbers, Kitgenix
+	 * MultiStore Sync's own network order numbers, etc.) show customers a
+	 * different number, so that number has to be translated back to the
+	 * internal ID before it can be looked up.
+	 *
+	 * This mirrors how WooCommerce's own core order-tracking shortcode
+	 * resolves the number, via the `woocommerce_shortcode_order_tracking_order_id`
+	 * filter, then falls back to a short list of known order-number meta
+	 * keys in case the active numbering plugin doesn't hook that filter.
+	 *
+	 * @param string $order_number Raw order number as submitted by the visitor.
+	 *
+	 * @return WC_Order|null
+	 */
+	private static function resolve_order_from_number( string $order_number ): ?WC_Order {
+		$order_number = ltrim( trim( $order_number ), '#' );
+
+		if ( '' === $order_number ) {
+			return null;
+		}
+
+		// As WooCommerce's own order-tracking shortcode does: let a custom or
+		// sequential order-number plugin translate the number back to the
+		// real internal order ID.
+		$filtered = apply_filters( 'woocommerce_shortcode_order_tracking_order_id', $order_number );
+
+		$order = wc_get_order( $filtered );
+
+		if ( $order instanceof WC_Order ) {
+			return $order;
+		}
+
+		// Fall back to known order-number meta keys used by popular
+		// sequential/custom order-number plugins, in case the active one
+		// doesn't hook the filter above.
+		$meta_keys = (array) apply_filters(
+			'kitgenix_order_tracking_for_woocommerce_order_number_meta_keys',
+			[
+				'_order_number',                                                 // WebToffee / Skyverge Sequential Order Numbers.
+				'_order_number_formatted',                                       // WebToffee / Skyverge Sequential Order Numbers (formatted display value).
+				'_alg_wc_custom_order_number',                                   // Algoritmika Custom Order Numbers for WooCommerce.
+				'_kitgenix_multistore_sync_for_woocommerce_network_order_number', // Kitgenix MultiStore Sync network order numbers.
+			]
+		);
+
+		foreach ( $meta_keys as $meta_key ) {
+			if ( ! is_string( $meta_key ) || '' === $meta_key ) {
+				continue;
+			}
+
+			$orders = wc_get_orders(
+				[
+					'limit'      => 1,
+					'meta_key'   => $meta_key,
+					'meta_value' => $order_number,
+					'return'     => 'objects',
+				]
+			);
+
+			if ( ! empty( $orders[0] ) && $orders[0] instanceof WC_Order ) {
+				return $orders[0];
+			}
+		}
+
+		return null;
+	}
+
+	/**
 	 * Render the tracking form shortcode.
 	 *
 	 * @param array       $atts    Shortcode attributes.
@@ -85,13 +167,22 @@ final class Shortcodes {
 			? (string) sanitize_text_field( wp_unslash( $_SERVER['REQUEST_METHOD'] ) )
 			: '';
 
+		$remote_ip = self::get_remote_ip();
+
 		if ( 'POST' === strtoupper( $request_method ) && isset( $_POST['kitgenix_tracking_nonce'] ) ) {
 			$nonce = sanitize_text_field( wp_unslash( $_POST['kitgenix_tracking_nonce'] ) );
 
-			if ( wp_verify_nonce( $nonce, 'kitgenix_tracking_lookup' ) ) {
+			if ( self::is_ip_rate_limited( $remote_ip ) ) {
+				$error = __( 'Too many lookup attempts. Please wait a few minutes and try again.', 'kitgenix-order-tracking-for-woocommerce' );
+			} elseif ( wp_verify_nonce( $nonce, 'kitgenix_tracking_lookup' ) ) {
 				$mode = isset( $_POST['kitgenix_tracking_mode'] )
 					? sanitize_text_field( wp_unslash( $_POST['kitgenix_tracking_mode'] ) )
 					: 'order';
+
+				// Deliberately identical whether the order number doesn't exist or
+				// the email doesn't match it, so this form cannot be used to
+				// discover which order numbers exist.
+				$order_not_found_message = __( 'We could not find a matching order for that order number and email address. Please check your details and try again.', 'kitgenix-order-tracking-for-woocommerce' );
 
 				if ( 'tracking' === $mode ) {
 					$tracking_number = isset( $_POST['kitgenix_tracking_number'] )
@@ -105,8 +196,10 @@ final class Shortcodes {
 
 						if ( ! $order instanceof WC_Order ) {
 							$error = __( 'No order found for that tracking number.', 'kitgenix-order-tracking-for-woocommerce' );
+							self::record_ip_failure( $remote_ip );
 						} else {
 							self::increment_successful_lookup_count();
+							self::clear_order_failures( (int) $order->get_id() );
 							$shipments = Order_Tracking::get_shipments( $order );
 							// If there are no shipments yet, do not set an error.
 							// The UI will render a friendly unshipped state below.
@@ -124,17 +217,23 @@ final class Shortcodes {
 					if ( '' === $order_number || '' === $email ) {
 						$error = __( 'Please enter your order number and billing email.', 'kitgenix-order-tracking-for-woocommerce' );
 					} else {
-						$order = wc_get_order( $order_number );
+						$candidate_order    = self::resolve_order_from_number( $order_number );
+						$candidate_order_id = $candidate_order instanceof WC_Order ? (int) $candidate_order->get_id() : 0;
 
-						if ( ! $order instanceof WC_Order ) {
-							$error = __( 'Order not found.', 'kitgenix-order-tracking-for-woocommerce' );
+						if ( ! $candidate_order instanceof WC_Order || self::is_order_locked( $candidate_order_id ) ) {
+							$error = $order_not_found_message;
+							self::record_ip_failure( $remote_ip );
 						} else {
-							$billing_email = $order->get_billing_email() ?: '';
+							$billing_email = $candidate_order->get_billing_email() ?: '';
 
 							if ( 0 !== strcasecmp( $billing_email, $email ) ) {
-								$error = __( 'The email address does not match this order.', 'kitgenix-order-tracking-for-woocommerce' );
+								$error = $order_not_found_message;
+								self::record_ip_failure( $remote_ip );
+								self::record_order_failure( $candidate_order_id );
 							} else {
+								$order = $candidate_order;
 								self::increment_successful_lookup_count();
+								self::clear_order_failures( $candidate_order_id );
 								$shipments = Order_Tracking::get_shipments( $order );
 								// If there are no shipments yet, do not set an error.
 								// The UI will render a friendly unshipped state below.
@@ -189,13 +288,23 @@ final class Shortcodes {
 			// Only enable verification if at least one postcode exists on the order.
 			if ( '' !== $shipping_postcode || '' !== $billing_postcode ) {
 				$postcode_verification_possible = true;
+				$order_id                       = (int) $order->get_id();
 
-				if ( '' !== trim( $posted_order_postcode ) ) {
+				if ( self::is_order_locked( $order_id ) ) {
+					// Stay locked out; do not evaluate the submitted postcode at all.
+					if ( '' !== trim( $posted_order_postcode ) ) {
+						$error = __( 'Too many lookup attempts for this order. Please wait a few minutes and try again.', 'kitgenix-order-tracking-for-woocommerce' );
+					}
+				} elseif ( '' !== trim( $posted_order_postcode ) ) {
 					if (
 						self::postal_codes_match( $posted_order_postcode, $shipping_postcode, $shipping_country )
 						|| self::postal_codes_match( $posted_order_postcode, $billing_postcode, $billing_country )
 					) {
 						$postcode_verified = true;
+						self::clear_order_failures( $order_id );
+					} else {
+						self::record_ip_failure( $remote_ip );
+						self::record_order_failure( $order_id );
 					}
 				}
 			} else {
@@ -838,6 +947,76 @@ final class Shortcodes {
 	private static function increment_successful_lookup_count(): void {
 		$lookups = (int) get_option( 'kitgenix_order_tracking_for_woocommerce_lookup_count', 0 );
 		update_option( 'kitgenix_order_tracking_for_woocommerce_lookup_count', $lookups + 1, false );
+	}
+
+	/**
+	 * Best-effort caller IP for throttling only (never used for auth decisions).
+	 */
+	private static function get_remote_ip(): string {
+		// phpcs:ignore WordPress.Security.ValidatedSanitizedInput.MissingUnslash, WordPress.Security.ValidatedSanitizedInput.InputNotSanitized -- read-only, used only as a rate-limit bucket key (hashed before storage), never echoed or used in a query.
+		$ip = isset( $_SERVER['REMOTE_ADDR'] ) ? (string) $_SERVER['REMOTE_ADDR'] : '';
+
+		return '' !== $ip ? $ip : 'unknown';
+	}
+
+	/** Filterable per-IP failure threshold (default 20 per 15 minutes). */
+	private static function max_failed_lookups_per_ip(): int {
+		$max = (int) apply_filters( 'kitgenix_order_tracking_for_woocommerce_max_failed_lookups_per_ip', self::MAX_FAILED_LOOKUPS_PER_IP );
+
+		return max( 1, $max );
+	}
+
+	/** Filterable per-order failure threshold (default 5). */
+	private static function max_failed_lookups_per_order(): int {
+		$max = (int) apply_filters( 'kitgenix_order_tracking_for_woocommerce_max_failed_lookups_per_order', self::MAX_FAILED_LOOKUPS_PER_ORDER );
+
+		return max( 1, $max );
+	}
+
+	/** True if this IP is currently locked out due to repeated failed lookups. */
+	private static function is_ip_rate_limited( string $ip ): bool {
+		return (bool) get_transient( 'kitgenix_otw_ip_lockout_' . md5( $ip ) );
+	}
+
+	/** Record one failed lookup for this IP; lock it out if the threshold is hit. */
+	private static function record_ip_failure( string $ip ): void {
+		$key   = 'kitgenix_otw_ip_fails_' . md5( $ip );
+		$count = (int) get_transient( $key ) + 1;
+		set_transient( $key, $count, self::IP_FAILURE_WINDOW );
+
+		if ( $count >= self::max_failed_lookups_per_ip() ) {
+			set_transient( 'kitgenix_otw_ip_lockout_' . md5( $ip ), 1, self::IP_LOCKOUT_DURATION );
+		}
+	}
+
+	/** True if this specific order is currently locked out due to repeated wrong email/postcode attempts. */
+	private static function is_order_locked( int $order_id ): bool {
+		return $order_id > 0 && (bool) get_transient( 'kitgenix_otw_order_lockout_' . $order_id );
+	}
+
+	/** Record one failed email/postcode attempt against this order; lock it out if the threshold is hit. */
+	private static function record_order_failure( int $order_id ): void {
+		if ( $order_id <= 0 ) {
+			return;
+		}
+
+		$key   = 'kitgenix_otw_order_fails_' . $order_id;
+		$count = (int) get_transient( $key ) + 1;
+		set_transient( $key, $count, self::ORDER_FAILURE_WINDOW );
+
+		if ( $count >= self::max_failed_lookups_per_order() ) {
+			set_transient( 'kitgenix_otw_order_lockout_' . $order_id, 1, self::ORDER_LOCKOUT_DURATION );
+		}
+	}
+
+	/** Clear the failure counter/lockout for this order after a genuinely verified lookup. */
+	private static function clear_order_failures( int $order_id ): void {
+		if ( $order_id <= 0 ) {
+			return;
+		}
+
+		delete_transient( 'kitgenix_otw_order_fails_' . $order_id );
+		delete_transient( 'kitgenix_otw_order_lockout_' . $order_id );
 	}
 
 	/**

@@ -8,7 +8,7 @@
 
 **Estimated runtime:** about 11 to 12 minutes (roughly 1,750 spoken words at around 155 words per minute, plus short pauses for screen demos)
 
-**Plugin version shown:** 2.1.0 (requires WordPress 6.0+, PHP 8.1+, WooCommerce 10.0+)
+**Plugin version shown:** 2.1.0 (requires WordPress 6.0+, PHP 8.2+, WooCommerce 10.0+)
 
 **Recording notes:**
 - Use a staging store with a few realistic orders. You'll need at least one order with three or more line items and a postcode, plus one test order with no postcode on file for the privacy segment.
@@ -56,7 +56,7 @@ We want to be upfront about one thing. This plugin doesn't connect to courier AP
 
 Go to Plugins, then Add New, search for "Kitgenix Order Tracking for WooCommerce", then install and activate it.
 
-[ON SCREEN: Callout: "Requires WooCommerce 10.0+, WordPress 6.0+, PHP 8.1+. HPOS compatible."]
+[ON SCREEN: Callout: "Requires WooCommerce 10.0+, WordPress 6.0+, PHP 8.2+. HPOS compatible."]
 
 WooCommerce needs to be active first. If it isn't, the plugin won't activate and tells you why. It also supports WooCommerce's High-Performance Order Storage, so it works on both the classic and the newer order screens.
 
@@ -116,9 +116,9 @@ Without the postcode, customers see the essentials: tracking number, carrier and
 
 When they enter a postcode that matches the billing or shipping address, they also see the addresses, which items are in each parcel, and what hasn't shipped yet. The matching is country-aware, so spaces, dashes and US ZIP+4 codes are all handled.
 
-[ON SCREEN: Callout titled "Privacy nuance". Look up the no-postcode test order by tracking number only and show the full details.]
+[ON SCREEN: Callout titled "Privacy nuance". Look up the no-postcode test order by tracking number only: only the tracking essentials show. Then look it up by order number and email: the full details show. Finally, submit a few wrong postcodes to show the "Too many unsuccessful attempts" message.]
 
-There's one nuance we want to be honest about. If an order has no postcode stored, there's nothing to check against, so the full details are shown, even when someone looks it up with just a tracking number. If you sell where postcodes aren't always collected, anyone with the tracking number for those orders can see the addresses and items. Making the postcode a required checkout field closes that gap.
+There's one nuance worth knowing. If an order has no postcode stored, there's nothing to check against, so the full details are only shown when the customer looks it up with their order number and billing email, never with just a tracking number. The form also limits failed attempts, so nobody can sit there guessing postcodes or email addresses: after a few wrong tries, that order is locked for 15 minutes.
 
 [ON SCREEN: Scroll down to the status timeline and the "Route from store to delivery address" map.]
 

@@ -2,14 +2,14 @@
 # This file is distributed under the GPLv3 or later.
 msgid ""
 msgstr ""
-"Project-Id-Version: Kitgenix Order Tracking for WooCommerce 2.1.0\n"
+"Project-Id-Version: Kitgenix Order Tracking for WooCommerce 2.2.0\n"
 "Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/kitgenix-order-tracking-for-woocommerce\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"POT-Creation-Date: 2026-10-13T09:28:34+00:00\n"
+"POT-Creation-Date: 2026-10-30T10:25:36+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
 "X-Domain: kitgenix-order-tracking-for-woocommerce\n"
@@ -80,8 +80,8 @@ msgid "Remove"
 msgstr ""
 
 #: includes/Admin/Analytics.php:223
-#: includes/Admin/Analytics.php:1841
-#: includes/Admin/Analytics.php:1982
+#: includes/Admin/Analytics.php:1876
+#: includes/Admin/Analytics.php:2017
 msgid "Upload"
 msgstr ""
 
@@ -275,28 +275,28 @@ msgstr ""
 msgid "Unable to open the export stream."
 msgstr ""
 
-#: includes/Admin/Analytics.php:855
+#: includes/Admin/Analytics.php:860
 msgid "You do not have permission to import shipment data."
 msgstr ""
 
-#: includes/Admin/Analytics.php:861
+#: includes/Admin/Analytics.php:866
 msgid "The import request could not be verified. Please try again."
 msgstr ""
 
-#: includes/Admin/Analytics.php:1322
+#: includes/Admin/Analytics.php:1357
 msgid "Date range (days):"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1326
+#: includes/Admin/Analytics.php:1361
 msgid "Apply"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1330
+#: includes/Admin/Analytics.php:1365
 msgid "Quick ranges:"
 msgstr ""
 
 #. translators: %d: number of days in the preset range
-#: includes/Admin/Analytics.php:1342
+#: includes/Admin/Analytics.php:1377
 #, php-format
 msgid "%d day"
 msgid_plural "%d days"
@@ -304,519 +304,519 @@ msgstr[0] ""
 msgstr[1] ""
 
 #. translators: 1: days, 2: from date, 3: to date
-#: includes/Admin/Analytics.php:1353
+#: includes/Admin/Analytics.php:1388
 #, php-format
 msgid "Showing last %1$d days (%2$s – %3$s)."
 msgstr ""
 
-#: includes/Admin/Analytics.php:1358
+#: includes/Admin/Analytics.php:1393
 msgid "Refresh"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1374
+#: includes/Admin/Analytics.php:1409
 msgid "Copy plugin link:"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1383
+#: includes/Admin/Analytics.php:1418
 msgid "Support Kitgenix"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1384
+#: includes/Admin/Analytics.php:1419
 msgid "Help us keep building"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1385
+#: includes/Admin/Analytics.php:1420
 msgid "This plugin turns every WooCommerce order into a multi-carrier tracking timeline and a branded self-serve tracking page, so customers check on their parcel instead of emailing you. It is maintained independently and funded entirely by donations from stores that rely on it."
 msgstr ""
 
-#: includes/Admin/Analytics.php:1386
+#: includes/Admin/Analytics.php:1421
 msgid "Donate with PayPal"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1387
+#: includes/Admin/Analytics.php:1422
 msgid "Donations are entirely optional. Kitgenix plugins keep working whether you donate or not."
 msgstr ""
 
-#: includes/Admin/Analytics.php:1391
+#: includes/Admin/Analytics.php:1426
 msgid "Leave a review"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1392
+#: includes/Admin/Analytics.php:1427
 msgid "Read the docs"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1393
+#: includes/Admin/Analytics.php:1428
 msgid "Copy plugin link"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1672
+#: includes/Admin/Analytics.php:1707
 msgid "International carrier packs"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1673
+#: includes/Admin/Analytics.php:1708
 msgid "Apply a regional carrier pack to enable a recommended set of built-in carriers and priorities for that market."
 msgstr ""
 
 #. translators: %s: carrier pack label
-#: includes/Admin/Analytics.php:1683
+#: includes/Admin/Analytics.php:1718
 #, php-format
 msgid "Based on your WooCommerce store country, we recommend the %s pack."
 msgstr ""
 
-#: includes/Admin/Analytics.php:1696
+#: includes/Admin/Analytics.php:1731
 msgid "Carrier pack"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1708
+#: includes/Admin/Analytics.php:1743
 msgid "Apply carrier pack"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1717
+#: includes/Admin/Analytics.php:1752
 msgid "Built-in carriers"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1718
+#: includes/Admin/Analytics.php:1753
 msgid "Enable or disable built-in carriers and set their priority."
 msgstr ""
 
-#: includes/Admin/Analytics.php:1729
-#: includes/Admin/Analytics.php:1817
-#: includes/Admin/Analytics.php:1869
-#: includes/Admin/Analytics.php:1958
+#: includes/Admin/Analytics.php:1764
+#: includes/Admin/Analytics.php:1852
+#: includes/Admin/Analytics.php:1904
+#: includes/Admin/Analytics.php:1993
 msgid "Enabled"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1730
-#: includes/Admin/Analytics.php:1823
-#: includes/Admin/Analytics.php:1870
-#: includes/Admin/Analytics.php:1964
+#: includes/Admin/Analytics.php:1765
+#: includes/Admin/Analytics.php:1858
+#: includes/Admin/Analytics.php:1905
+#: includes/Admin/Analytics.php:1999
 msgid "Priority"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1731
+#: includes/Admin/Analytics.php:1766
 msgid "Shipper"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1732
-#: includes/Admin/Analytics.php:1833
-#: includes/Admin/Analytics.php:1871
-#: includes/Admin/Analytics.php:1974
+#: includes/Admin/Analytics.php:1767
+#: includes/Admin/Analytics.php:1868
+#: includes/Admin/Analytics.php:1906
+#: includes/Admin/Analytics.php:2009
 msgid "Tracking URL pattern"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1780
+#: includes/Admin/Analytics.php:1815
 #: includes/Admin/Order_Meta_Box.php:174
 msgid "Save changes"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1798
+#: includes/Admin/Analytics.php:1833
 msgid "Custom carriers"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1799
+#: includes/Admin/Analytics.php:1834
 msgid "Add your own carriers here. Custom tracking URLs may include the placeholder {tracking_number}."
 msgstr ""
 
-#: includes/Admin/Analytics.php:1807
-#: includes/Admin/Analytics.php:1847
+#: includes/Admin/Analytics.php:1842
+#: includes/Admin/Analytics.php:1882
 msgid "Add shipper"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1828
-#: includes/Admin/Analytics.php:1868
-#: includes/Admin/Analytics.php:1969
+#: includes/Admin/Analytics.php:1863
+#: includes/Admin/Analytics.php:1903
+#: includes/Admin/Analytics.php:2004
 msgid "Name"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1838
-#: includes/Admin/Analytics.php:1979
+#: includes/Admin/Analytics.php:1873
+#: includes/Admin/Analytics.php:2014
 msgid "Icon URL (optional)"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1855
+#: includes/Admin/Analytics.php:1890
 msgid "All custom shippers"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1861
+#: includes/Admin/Analytics.php:1896
 msgid "No custom shippers yet"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1862
+#: includes/Admin/Analytics.php:1897
 msgid "Add your first one on the left."
 msgstr ""
 
-#: includes/Admin/Analytics.php:1872
+#: includes/Admin/Analytics.php:1907
 msgid "Icon"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1873
+#: includes/Admin/Analytics.php:1908
 msgid "Actions"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1893
+#: includes/Admin/Analytics.php:1928
 msgid "Yes"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1894
+#: includes/Admin/Analytics.php:1929
 msgid "No"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1898
+#: includes/Admin/Analytics.php:1933
 msgid "View"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1906
-#: includes/Admin/Analytics.php:1914
+#: includes/Admin/Analytics.php:1941
+#: includes/Admin/Analytics.php:1949
 msgid "Edit"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1915
-#: includes/Admin/Analytics.php:1990
+#: includes/Admin/Analytics.php:1950
+#: includes/Admin/Analytics.php:2025
 msgid "Delete"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1944
+#: includes/Admin/Analytics.php:1979
 msgid "Edit shipper"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1945
+#: includes/Admin/Analytics.php:1980
 #: includes/Admin/Order_Meta_Box.php:488
 msgid "Close"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1991
+#: includes/Admin/Analytics.php:2026
 #: includes/Admin/Order_Meta_Box.php:584
 msgid "Cancel"
 msgstr ""
 
-#: includes/Admin/Analytics.php:1992
+#: includes/Admin/Analytics.php:2027
 msgid "Save Changes"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2011
+#: includes/Admin/Analytics.php:2046
 msgid "Orders in range"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2013
+#: includes/Admin/Analytics.php:2048
 msgid "Total WooCommerce orders created in the selected period."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2018
+#: includes/Admin/Analytics.php:2053
 msgid "Shipment coverage"
 msgstr ""
 
 #. translators: 1: number
-#: includes/Admin/Analytics.php:2022
+#: includes/Admin/Analytics.php:2057
 #, php-format
 msgid "%1$s orders have at least one shipment."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2029
+#: includes/Admin/Analytics.php:2064
 msgid "Avg time to ship"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2030
-#: includes/Admin/Analytics.php:2037
+#: includes/Admin/Analytics.php:2065
+#: includes/Admin/Analytics.php:2072
 msgid "days"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2031
+#: includes/Admin/Analytics.php:2066
 msgid "From order created → earliest shipment date."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2036
+#: includes/Admin/Analytics.php:2071
 msgid "Median time to ship"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2038
+#: includes/Admin/Analytics.php:2073
 msgid "Less affected by outliers than average."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2043
+#: includes/Admin/Analytics.php:2078
 msgid "Shipments in range"
 msgstr ""
 
 #. translators: 1: carrier name
 #. translators: 1: carrier
-#: includes/Admin/Analytics.php:2048
-#: includes/Admin/Analytics.php:2147
+#: includes/Admin/Analytics.php:2083
+#: includes/Admin/Analytics.php:2182
 #, php-format
 msgid "Top carrier: %1$s"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2051
+#: includes/Admin/Analytics.php:2086
 msgid "No shipments found."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2056
+#: includes/Admin/Analytics.php:2091
 msgid "Exception rate"
 msgstr ""
 
 #. translators: 1: number
-#: includes/Admin/Analytics.php:2060
+#: includes/Admin/Analytics.php:2095
 #, php-format
 msgid "%1$s orders have at least one exception shipment."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2067
+#: includes/Admin/Analytics.php:2102
 msgid "Tracking lookups"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2069
+#: includes/Admin/Analytics.php:2104
 msgid "All-time customer tracking page lookups."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2074
+#: includes/Admin/Analytics.php:2109
 msgid "Orders without shipments"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2076
+#: includes/Admin/Analytics.php:2111
 msgid "Helpful for spotting unfulfilled/unstaged workflows."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2086
+#: includes/Admin/Analytics.php:2121
 msgid "Shipments over time"
 msgstr ""
 
 #. translators: 1: number, 2: days
-#: includes/Admin/Analytics.php:2110
+#: includes/Admin/Analytics.php:2145
 #, php-format
 msgid "%1$s shipments recorded across %2$d days."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2119
+#: includes/Admin/Analytics.php:2154
 msgid "Insights"
 msgstr ""
 
 #. translators: 1: percent
-#: includes/Admin/Analytics.php:2128
+#: includes/Admin/Analytics.php:2163
 #, php-format
 msgid "Shipment coverage: %1$s%%"
 msgstr ""
 
 #. translators: 1: percent
-#: includes/Admin/Analytics.php:2134
+#: includes/Admin/Analytics.php:2169
 #, php-format
 msgid "Exception rate: %1$s%%"
 msgstr ""
 
 #. translators: 1: number
-#: includes/Admin/Analytics.php:2140
+#: includes/Admin/Analytics.php:2175
 #, php-format
 msgid "Exceptions (shipments): %1$s"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2161
+#: includes/Admin/Analytics.php:2196
 msgid "View breakdown →"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2218
+#: includes/Admin/Analytics.php:2253
 msgid "Shipments by carrier"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2221
-#: includes/Admin/Analytics.php:2266
+#: includes/Admin/Analytics.php:2256
+#: includes/Admin/Analytics.php:2301
 #: includes/Emails/Email_Hooks.php:244
 msgid "Carrier"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2225
+#: includes/Admin/Analytics.php:2260
 msgid "Shipments by status"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2228
-#: includes/Admin/Analytics.php:2268
+#: includes/Admin/Analytics.php:2263
+#: includes/Admin/Analytics.php:2303
 msgid "Status"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2246
+#: includes/Admin/Analytics.php:2281
 msgid "Recent shipments"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2246
+#: includes/Admin/Analytics.php:2281
 msgid "The most recently recorded shipments in this date range."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2252
+#: includes/Admin/Analytics.php:2287
 msgid "No recent shipments"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2253
+#: includes/Admin/Analytics.php:2288
 msgid "No recent shipments found in this date range."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2264
+#: includes/Admin/Analytics.php:2299
 msgid "Date shipped"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2265
+#: includes/Admin/Analytics.php:2300
 msgid "Order"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2267
+#: includes/Admin/Analytics.php:2302
 #: includes/Admin/Order_Meta_Box.php:504
-#: includes/Frontend/Shortcodes.php:291
+#: includes/Frontend/Shortcodes.php:400
 msgid "Tracking number"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2299
-#: includes/Frontend/Timeline.php:51
+#: includes/Admin/Analytics.php:2334
+#: includes/Frontend/Timeline.php:88
 #: includes/Orders/Shipment.php:39
 msgid "Shipped"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2332
+#: includes/Admin/Analytics.php:2367
 msgid "No shipments found"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2333
+#: includes/Admin/Analytics.php:2368
 msgid "No shipments found in this date range."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2394
+#: includes/Admin/Analytics.php:2429
 msgid "Help and links"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2398
+#: includes/Admin/Analytics.php:2433
 msgid "Need Help?"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2399
+#: includes/Admin/Analytics.php:2434
 msgid "Open the documentation for setup guidance or send us a support request if you need help configuring the plugin."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2401
+#: includes/Admin/Analytics.php:2436
 msgid "Documentation"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2402
+#: includes/Admin/Analytics.php:2437
 msgid "Request Support"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2403
+#: includes/Admin/Analytics.php:2438
 #: kitgenix-order-tracking-for-woocommerce.php:606
 msgid "Request a Feature"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2409
+#: includes/Admin/Analytics.php:2444
 msgid "Visit Our Official Facebook Group"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2410
+#: includes/Admin/Analytics.php:2445
 msgid "Join the Kitgenix community to ask questions, share feedback, and keep up with product updates."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2412
+#: includes/Admin/Analytics.php:2447
 msgid "Join Group"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2418
+#: includes/Admin/Analytics.php:2453
 msgid "Follow Us"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2419
+#: includes/Admin/Analytics.php:2454
 msgid "Keep up with new releases, tutorials, and product news across our channels."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2499
+#: includes/Admin/Analytics.php:2534
 msgid "Event log cleared."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2507
+#: includes/Admin/Analytics.php:2542
 msgid "Log auto-delete setting saved."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2518
+#: includes/Admin/Analytics.php:2553
 msgid "7 days"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2519
+#: includes/Admin/Analytics.php:2554
 msgid "14 days"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2520
+#: includes/Admin/Analytics.php:2555
 msgid "30 days"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2528
+#: includes/Admin/Analytics.php:2563
 msgid "Activity Log"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2529
+#: includes/Admin/Analytics.php:2564
 msgid "A record of recent plugin events. Entries show the timestamp, context, outcome, and a plain-English note. IP addresses and sensitive data are never stored here."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2535
+#: includes/Admin/Analytics.php:2570
 msgid "Auto-delete logs after"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2541
+#: includes/Admin/Analytics.php:2576
 msgid "Log entries older than the selected period are removed automatically."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2543
+#: includes/Admin/Analytics.php:2578
 msgid "Clear all log entries?"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2543
+#: includes/Admin/Analytics.php:2578
 msgid "Clear log"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2552
+#: includes/Admin/Analytics.php:2587
 msgid "No events logged yet"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2553
+#: includes/Admin/Analytics.php:2588
 msgid "Activity will appear here as it happens."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2561
+#: includes/Admin/Analytics.php:2596
 msgid "Search log…"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2568
+#: includes/Admin/Analytics.php:2603
 msgid "Time"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2569
+#: includes/Admin/Analytics.php:2604
 msgid "Context"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2570
+#: includes/Admin/Analytics.php:2605
 msgid "Outcome"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2571
+#: includes/Admin/Analytics.php:2606
 msgid "Note"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2581
+#: includes/Admin/Analytics.php:2616
 #: includes/Support/Event_Log.php:140
 msgid "Unknown time"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2606
+#: includes/Admin/Analytics.php:2641
 msgid "No matching log entries"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2614
+#: includes/Admin/Analytics.php:2649
 msgid "Category"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2615
+#: includes/Admin/Analytics.php:2650
 msgid "What it means"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2616
+#: includes/Admin/Analytics.php:2651
 msgid "Action needed?"
 msgstr ""
 
-#: includes/Admin/Analytics.php:2639
-#: includes/Admin/Analytics.php:2650
+#: includes/Admin/Analytics.php:2674
+#: includes/Admin/Analytics.php:2685
 msgid "Permission denied."
 msgstr ""
 
-#: includes/Admin/Analytics.php:2666
+#: includes/Admin/Analytics.php:2701
 msgid "Carrier settings were saved via the admin settings page."
 msgstr ""
 
@@ -837,7 +837,7 @@ msgid "Remove shipment"
 msgstr ""
 
 #: includes/Admin/Order_Meta_Box.php:159
-#: includes/Frontend/Shortcodes.php:102
+#: includes/Frontend/Shortcodes.php:193
 msgid "Please enter a tracking number."
 msgstr ""
 
@@ -853,7 +853,8 @@ msgstr ""
 
 #: includes/Admin/Order_Meta_Box.php:162
 #: includes/Admin/Order_Meta_Box.php:322
-#: includes/Frontend/Shortcodes.php:395
+#: includes/Frontend/My_Account.php:141
+#: includes/Frontend/Shortcodes.php:504
 msgid "Tracking number:"
 msgstr ""
 
@@ -870,7 +871,8 @@ msgstr ""
 #: includes/Admin/Order_Meta_Box.php:165
 #: includes/Admin/Order_Meta_Box.php:338
 #: includes/Emails/Email_Hooks.php:164
-#: includes/Frontend/Shortcodes.php:419
+#: includes/Frontend/My_Account.php:153
+#: includes/Frontend/Shortcodes.php:528
 msgid "Items in this shipment:"
 msgstr ""
 
@@ -911,7 +913,6 @@ msgid "Confirm"
 msgstr ""
 
 #: includes/Admin/Order_Meta_Box.php:201
-#: includes/Frontend/Shortcodes.php:130
 msgid "Order not found."
 msgstr ""
 
@@ -991,8 +992,8 @@ msgstr ""
 
 #: includes/Emails/Email_Hooks.php:127
 #: includes/Emails/Email_Hooks.php:239
-#: includes/Frontend/Shortcodes.php:371
-#: includes/Frontend/Shortcodes.php:638
+#: includes/Frontend/Shortcodes.php:480
+#: includes/Frontend/Shortcodes.php:747
 msgid "Shipment Tracking"
 msgstr ""
 
@@ -1003,8 +1004,8 @@ msgstr ""
 
 #: includes/Emails/Email_Hooks.php:157
 #: includes/Emails/Email_Hooks.php:296
-#: includes/Frontend/Shortcodes.php:244
-#: includes/Frontend/Shortcodes.php:314
+#: includes/Frontend/Shortcodes.php:353
+#: includes/Frontend/Shortcodes.php:423
 msgid "Track your order"
 msgstr ""
 
@@ -1052,261 +1053,292 @@ msgstr ""
 msgid "Your {site_title} order {order_number} is partially shipped"
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:107
+#: includes/Frontend/My_Account.php:91
+msgid "Shipment tracking"
+msgstr ""
+
+#: includes/Frontend/My_Account.php:99
+msgid "This order has not been dispatched yet. Tracking details will appear here as soon as your items are shipped."
+msgstr ""
+
+#. translators: %s: number of shipments
+#: includes/Frontend/My_Account.php:106
+#, php-format
+msgid "%s shipment for this order"
+msgid_plural "%s shipments for this order"
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: %d: order item ID
+#: includes/Frontend/My_Account.php:165
+#: includes/Frontend/Shortcodes.php:541
+#, php-format
+msgid "Item #%d"
+msgstr ""
+
+#. translators: %s: quantity shipped
+#: includes/Frontend/My_Account.php:173
+#: includes/Frontend/Shortcodes.php:560
+#, php-format
+msgid "× %s"
+msgstr ""
+
+#: includes/Frontend/My_Account.php:187
+msgid "Track with carrier"
+msgstr ""
+
+#: includes/Frontend/My_Account.php:192
+#: includes/Frontend/Shortcodes.php:518
+msgid "Online tracking is not available for this carrier."
+msgstr ""
+
+#: includes/Frontend/Shortcodes.php:176
+msgid "Too many lookup attempts. Please wait a few minutes and try again."
+msgstr ""
+
+#: includes/Frontend/Shortcodes.php:185
+msgid "We could not find a matching order for that order number and email address. Please check your details and try again."
+msgstr ""
+
+#: includes/Frontend/Shortcodes.php:198
 msgid "No order found for that tracking number."
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:125
+#: includes/Frontend/Shortcodes.php:218
 msgid "Please enter your order number and billing email."
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:135
-msgid "The email address does not match this order."
-msgstr ""
-
-#: includes/Frontend/Shortcodes.php:146
+#: includes/Frontend/Shortcodes.php:245
 msgid "Your request could not be verified. Please try again."
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:247
+#: includes/Frontend/Shortcodes.php:296
+msgid "Too many lookup attempts for this order. Please wait a few minutes and try again."
+msgstr ""
+
+#: includes/Frontend/Shortcodes.php:356
 msgid "Enter your order details or tracking number below to see the latest shipment information."
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:257
+#: includes/Frontend/Shortcodes.php:366
 msgid "Order number & email"
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:262
+#: includes/Frontend/Shortcodes.php:371
 msgid "Tracking number only"
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:270
+#: includes/Frontend/Shortcodes.php:379
 msgid "Order number"
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:279
+#: includes/Frontend/Shortcodes.php:388
 msgid "Billing email"
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:330
-#: includes/Frontend/Shortcodes.php:603
+#: includes/Frontend/Shortcodes.php:439
+#: includes/Frontend/Shortcodes.php:712
 msgid "Order summary"
 msgstr ""
 
 #. translators: %1$s: order number
-#: includes/Frontend/Shortcodes.php:337
-#: includes/Frontend/Shortcodes.php:608
+#: includes/Frontend/Shortcodes.php:446
+#: includes/Frontend/Shortcodes.php:717
 #, php-format
 msgid "Order #%1$s"
 msgstr ""
 
 #. translators: %s: order date
 #. translators: %s: order date.
-#: includes/Frontend/Shortcodes.php:352
-#: includes/Frontend/Shortcodes.php:621
+#: includes/Frontend/Shortcodes.php:461
+#: includes/Frontend/Shortcodes.php:730
 #, php-format
 msgid "Placed on %s"
 msgstr ""
 
 #. translators: %s: order status
 #. translators: %s: order status (e.g. Completed).
-#: includes/Frontend/Shortcodes.php:363
-#: includes/Frontend/Shortcodes.php:630
+#: includes/Frontend/Shortcodes.php:472
+#: includes/Frontend/Shortcodes.php:739
 #, php-format
 msgid "Status: %s"
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:404
+#: includes/Frontend/Shortcodes.php:513
 msgid "Open carrier tracking page"
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:409
-msgid "Online tracking is not available for this carrier."
-msgstr ""
-
-#. translators: %d: order item ID
-#: includes/Frontend/Shortcodes.php:432
-#, php-format
-msgid "Item #%d"
-msgstr ""
-
 #. translators: %1$s: shipped quantity, %2$s: total ordered quantity
-#: includes/Frontend/Shortcodes.php:443
+#: includes/Frontend/Shortcodes.php:552
 #, php-format
 msgid "%1$s of %2$s"
 msgstr ""
 
-#. translators: %s: quantity shipped
-#: includes/Frontend/Shortcodes.php:451
-#, php-format
-msgid "× %s"
-msgstr ""
-
-#: includes/Frontend/Shortcodes.php:470
-#: includes/Frontend/Shortcodes.php:646
+#: includes/Frontend/Shortcodes.php:579
+#: includes/Frontend/Shortcodes.php:755
 msgid "Order details"
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:475
-#: includes/Frontend/Shortcodes.php:651
+#: includes/Frontend/Shortcodes.php:584
+#: includes/Frontend/Shortcodes.php:760
 msgid "Billing address"
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:482
-#: includes/Frontend/Shortcodes.php:658
+#: includes/Frontend/Shortcodes.php:591
+#: includes/Frontend/Shortcodes.php:767
 msgid "No billing address available."
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:488
-#: includes/Frontend/Shortcodes.php:664
+#: includes/Frontend/Shortcodes.php:597
+#: includes/Frontend/Shortcodes.php:773
 msgid "Shipping address"
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:495
-#: includes/Frontend/Shortcodes.php:671
+#: includes/Frontend/Shortcodes.php:604
+#: includes/Frontend/Shortcodes.php:780
 msgid "No shipping address available."
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:518
-#: includes/Frontend/Shortcodes.php:684
+#: includes/Frontend/Shortcodes.php:627
+#: includes/Frontend/Shortcodes.php:793
 msgid "Items in this order"
 msgstr ""
 
 #. translators: %s: shipped quantity
-#: includes/Frontend/Shortcodes.php:544
-#: includes/Frontend/Shortcodes.php:707
+#: includes/Frontend/Shortcodes.php:653
+#: includes/Frontend/Shortcodes.php:816
 #, php-format
 msgid "Shipped: %s"
 msgstr ""
 
 #. translators: %s: quantity not shipped
-#: includes/Frontend/Shortcodes.php:555
-#: includes/Frontend/Shortcodes.php:716
+#: includes/Frontend/Shortcodes.php:664
+#: includes/Frontend/Shortcodes.php:825
 #, php-format
 msgid "Not shipped: %s"
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:569
-#: includes/Frontend/Shortcodes.php:730
+#: includes/Frontend/Shortcodes.php:678
+#: includes/Frontend/Shortcodes.php:839
 msgid "For your privacy, full addresses, route maps, and item details are only shown after you confirm the postcode, ZIP code, or postal code used on your order."
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:571
-#: includes/Frontend/Shortcodes.php:732
+#: includes/Frontend/Shortcodes.php:680
+#: includes/Frontend/Shortcodes.php:841
 msgid "Full addresses, route maps, and item details are not available for this order from this lookup method."
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:580
-#: includes/Frontend/Shortcodes.php:741
+#: includes/Frontend/Shortcodes.php:689
+#: includes/Frontend/Shortcodes.php:850
 msgid "Route from store to delivery address"
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:594
-#: includes/Frontend/Shortcodes.php:755
+#: includes/Frontend/Shortcodes.php:703
+#: includes/Frontend/Shortcodes.php:864
 msgid "Map powered by OpenStreetMap. Route is illustrative only and may not precisely match the actual journey or address."
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:640
+#: includes/Frontend/Shortcodes.php:749
 msgid "This order has not yet been dispatched. Tracking information will be displayed here once your items have been shipped. Please refer to your order confirmation email to confirm that your goods are not on back-order."
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:813
+#: includes/Frontend/Shortcodes.php:922
 msgid "We could not determine a route for this order."
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:814
+#: includes/Frontend/Shortcodes.php:923
 msgid "Unable to locate the customer address, showing store location only."
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:815
+#: includes/Frontend/Shortcodes.php:924
 msgid "Unable to locate the store address, showing customer location only."
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:816
+#: includes/Frontend/Shortcodes.php:925
 msgid "We could not determine map locations for this order."
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:817
+#: includes/Frontend/Shortcodes.php:926
 msgid "Store"
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:818
+#: includes/Frontend/Shortcodes.php:927
 msgid "Customer"
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:819
+#: includes/Frontend/Shortcodes.php:928
 msgid "&copy; OpenStreetMap contributors"
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:820
+#: includes/Frontend/Shortcodes.php:929
 msgid "There was a problem loading the map for this order."
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:821
+#: includes/Frontend/Shortcodes.php:930
 msgid "We could not determine a valid location for this order."
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:920
+#: includes/Frontend/Shortcodes.php:1099
 msgid "ZIP code (Optional)"
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:929
+#: includes/Frontend/Shortcodes.php:1108
 msgid "Postcode (Optional)"
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:932
+#: includes/Frontend/Shortcodes.php:1111
 msgid "Postal code (Optional)"
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:935
+#: includes/Frontend/Shortcodes.php:1114
 msgid "Postal code / ZIP code (Optional)"
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:948
+#: includes/Frontend/Shortcodes.php:1127
 msgid "Enter the billing or shipping ZIP code used on your order to view full addresses, the route map, and item details."
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:957
+#: includes/Frontend/Shortcodes.php:1136
 msgid "Enter the billing or shipping postcode used on your order to view full addresses, the route map, and item details."
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:960
+#: includes/Frontend/Shortcodes.php:1139
 msgid "Enter the billing or shipping postal code used on your order to view full addresses, the route map, and item details."
 msgstr ""
 
-#: includes/Frontend/Shortcodes.php:963
+#: includes/Frontend/Shortcodes.php:1142
 msgid "Enter the billing or shipping postal code or ZIP code used on your order to view full addresses, the route map, and item details."
 msgstr ""
 
-#: includes/Frontend/Timeline.php:46
-msgid "Order placed"
-msgstr ""
-
-#: includes/Frontend/Timeline.php:56
-#: includes/Orders/Shipment.php:40
-msgid "In transit"
-msgstr ""
-
-#: includes/Frontend/Timeline.php:62
+#: includes/Frontend/Timeline.php:57
 #: includes/Orders/Shipment.php:41
 msgid "Delivered"
 msgstr ""
 
-#: includes/Frontend/Timeline.php:67
+#: includes/Frontend/Timeline.php:61
 msgid "Delivery exception"
 msgstr ""
 
-#: includes/Frontend/Timeline.php:71
+#: includes/Frontend/Timeline.php:65
 msgid "Returned to sender"
 msgstr ""
 
-#: includes/Frontend/Timeline.php:75
+#: includes/Frontend/Timeline.php:69
 #: includes/Orders/Shipment.php:44
 msgid "Cancelled"
 msgstr ""
 
+#: includes/Frontend/Timeline.php:83
+msgid "Order placed"
+msgstr ""
+
+#: includes/Frontend/Timeline.php:104
+#: includes/Orders/Shipment.php:40
+msgid "In transit"
+msgstr ""
+
 #. translators: %s: estimated delivery date
-#: includes/Frontend/Timeline.php:108
+#: includes/Frontend/Timeline.php:136
 #, php-format
 msgid "Estimated delivery: %s"
 msgstr ""
@@ -1323,14 +1355,14 @@ msgstr ""
 msgid "Returned"
 msgstr ""
 
-#: includes/Plugin.php:68
-#: includes/Plugin.php:103
+#: includes/Plugin.php:70
+#: includes/Plugin.php:105
 msgctxt "Order status"
 msgid "Partially shipped"
 msgstr ""
 
 #. translators: %s: number of orders
-#: includes/Plugin.php:78
+#: includes/Plugin.php:80
 #, php-format
 msgid "Partially shipped <span class=\"count\">(%s)</span>"
 msgid_plural "Partially shipped <span class=\"count\">(%s)</span>"

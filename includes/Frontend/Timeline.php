@@ -20,6 +20,17 @@ use Kitgenix\OrderTracking\Orders\Shipment;
  * status) are ever shown. No live carrier scan events are fabricated –
  * if a real carrier-events integration is added in future, it should feed
  * additional steps in here rather than this class inventing any.
+ *
+ * Stores are not expected to manually walk a shipment through "in transit"
+ * before marking it delivered, so there is no separate pending "In transit"
+ * step that would otherwise sit greyed-out forever. Deliberately, no step
+ * ever claims the parcel is currently "on its way"/"in transit" unless a
+ * human actually set that status – that kind of claim goes stale (and
+ * becomes false) the moment the parcel is delivered but nobody updates it.
+ * By default the last step is simply "Shipped" – a fact that stays true
+ * forever – shown with a pulsing/"live" treatment so it still reads as
+ * active rather than stalled, without asserting anything about where the
+ * parcel currently is.
  */
 final class Timeline {
 
@@ -41,6 +52,32 @@ final class Timeline {
 			? self::format_date( (string) $shipment['created_at'] )
 			: '';
 
+		$terminal_steps = [
+			Shipment::STATUS_DELIVERED => [
+				'label'   => __( 'Delivered', 'kitgenix-order-tracking-for-woocommerce' ),
+				'variant' => 'default',
+			],
+			Shipment::STATUS_EXCEPTION => [
+				'label'   => __( 'Delivery exception', 'kitgenix-order-tracking-for-woocommerce' ),
+				'variant' => 'warning',
+			],
+			Shipment::STATUS_RETURNED => [
+				'label'   => __( 'Returned to sender', 'kitgenix-order-tracking-for-woocommerce' ),
+				'variant' => 'warning',
+			],
+			Shipment::STATUS_CANCELLED => [
+				'label'   => __( 'Cancelled', 'kitgenix-order-tracking-for-woocommerce' ),
+				'variant' => 'warning',
+			],
+		];
+
+		$is_terminal = isset( $terminal_steps[ $status ] );
+		// Only treat "Shipped" as the live/current step while nothing more
+		// specific has been recorded. Once staff explicitly set "in transit",
+		// that becomes its own step instead – a status a human actually chose
+		// is safe to show as current, unlike a guess this class would invent.
+		$shipped_is_current = ! $is_terminal && Shipment::STATUS_IN_TRANSIT !== $status;
+
 		$steps = [
 			[
 				'label'   => __( 'Order placed', 'kitgenix-order-tracking-for-woocommerce' ),
@@ -51,38 +88,25 @@ final class Timeline {
 				'label'   => __( 'Shipped', 'kitgenix-order-tracking-for-woocommerce' ),
 				'date'    => $shipped_date,
 				'reached' => true,
+				'variant' => $shipped_is_current ? 'current' : 'default',
 			],
-			[
+		];
+
+		if ( $is_terminal ) {
+			$steps[] = [
+				'label'   => $terminal_steps[ $status ]['label'],
+				'date'    => '',
+				'reached' => true,
+				'variant' => $terminal_steps[ $status ]['variant'],
+			];
+		} elseif ( Shipment::STATUS_IN_TRANSIT === $status ) {
+			$steps[] = [
 				'label'   => __( 'In transit', 'kitgenix-order-tracking-for-woocommerce' ),
 				'date'    => '',
-				'reached' => in_array( $status, [ Shipment::STATUS_IN_TRANSIT, Shipment::STATUS_DELIVERED ], true ),
-			],
-		];
-
-		$final_label   = __( 'Delivered', 'kitgenix-order-tracking-for-woocommerce' );
-		$final_reached = Shipment::STATUS_DELIVERED === $status;
-		$final_variant = 'default';
-
-		if ( Shipment::STATUS_EXCEPTION === $status ) {
-			$final_label   = __( 'Delivery exception', 'kitgenix-order-tracking-for-woocommerce' );
-			$final_reached = true;
-			$final_variant = 'warning';
-		} elseif ( Shipment::STATUS_RETURNED === $status ) {
-			$final_label   = __( 'Returned to sender', 'kitgenix-order-tracking-for-woocommerce' );
-			$final_reached = true;
-			$final_variant = 'warning';
-		} elseif ( Shipment::STATUS_CANCELLED === $status ) {
-			$final_label   = __( 'Cancelled', 'kitgenix-order-tracking-for-woocommerce' );
-			$final_reached = true;
-			$final_variant = 'warning';
+				'reached' => true,
+				'variant' => 'current',
+			];
 		}
-
-		$steps[] = [
-			'label'   => $final_label,
-			'date'    => '',
-			'reached' => $final_reached,
-			'variant' => $final_variant,
-		];
 
 		$html = '<ol class="kitgenix-timeline">';
 		foreach ( $steps as $step ) {
@@ -93,7 +117,11 @@ final class Timeline {
 			}
 
 			$html .= '<li class="' . esc_attr( implode( ' ', $classes ) ) . '">';
-			$html .= '<span class="kitgenix-timeline-dot" aria-hidden="true"></span>';
+			$html .= '<span class="kitgenix-timeline-dot" aria-hidden="true">';
+			if ( ! empty( $step['variant'] ) && 'current' === $step['variant'] ) {
+				$html .= '<span class="kitgenix-timeline-pulse" aria-hidden="true"></span>';
+			}
+			$html .= '</span>';
 			$html .= '<span class="kitgenix-timeline-label">' . esc_html( (string) $step['label'] ) . '</span>';
 			if ( ! empty( $step['date'] ) ) {
 				$html .= '<span class="kitgenix-timeline-date">' . esc_html( (string) $step['date'] ) . '</span>';
